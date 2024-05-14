@@ -4,7 +4,7 @@
     "slug": "unibuds",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/unibuds.jpg",
+    "icon": "./assets/images/unibuds.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
