@@ -1,19 +1,34 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
+import unibudslogo from '@/assets/images/unibuds.png';
+import { supabase } from "@/src/supabase/supabase.js";
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-      //WIP -- Supabase/MongoDB user authentication
-      Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
-    
+  async function handleLogin() {
+    //WIP -- Supabase/MongoDB user authentication
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter both email and password.");
+      return;
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+    console.log('hi', error);
+    if (error) Alert.alert(error.message)
+
+    Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Image source={unibudslogo} style={styles.logo} />
+      <Text style={styles.title}>Sign up</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -54,6 +69,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
   },
 });
 
