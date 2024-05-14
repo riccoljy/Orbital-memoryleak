@@ -18,7 +18,7 @@ git clone https://github.com/riccoljy/Orbital-memoryleak.git
 ```
 2. Navigate to the directory and install dependencies:
 ```
-cd nustlers
+cd Orbital-memoryleak
 npm install
 ```
 5. Launch the project locally
