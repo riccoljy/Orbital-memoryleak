@@ -4,19 +4,21 @@ import unibudslogo from '@/assets/images/unibuds.png';
 import { supabase } from "@/src/supabase/supabase.js";
 
 
-const LoginPage = () => {
+const Registration = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  async function handleLogin() {
+  async function handleRegister() {
     //WIP -- Supabase/MongoDB user authentication
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
     }
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signUp({
       email: email,
-      password: password,
+      password: password
     })
     console.log('hi', error);
     if (error) Alert.alert(error.message)
@@ -28,7 +30,21 @@ const LoginPage = () => {
   return (
     <View style={styles.container}>
       <Image source={unibudslogo} style={styles.logo} />
-      <Text style={styles.title}>Sign up</Text>
+      <Text style={styles.title}>Register</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="First name"
+        onChangeText={setFirstName}
+        value={firstName}
+        autoCapitalize="words"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last name"
+        onChangeText={setLastName}
+        value={lastName}
+        autoCapitalize="words"
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -44,7 +60,7 @@ const LoginPage = () => {
         value={password}
         secureTextEntry
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Register" onPress={handleRegister} />
     </View>
   );
 };
@@ -63,7 +79,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: '100%',
+    width: '50%',
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
@@ -77,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginPage;
+export default Registration;
