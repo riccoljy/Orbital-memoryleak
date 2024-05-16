@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity } from 'react-native';
 import unibudslogo from '@/assets/images/unibuds.png';
 import { supabase } from "@/src/supabase/supabase.js";
+import { useRouter } from "expo-router";
+
 
 
 const LoginPage = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   async function handleLogin() {
-    //WIP -- Supabase/MongoDB user authentication
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
     }
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     })
-    console.log('hi', error);
-    if (error) Alert.alert(error.message)
+    console.log('hi', email, password,data, error);
+    if (error) Alert.alert(error.message);
+    else router.push("/tabs/home");
+
 
     Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
 
@@ -45,6 +49,10 @@ const LoginPage = () => {
         secureTextEntry
       />
       <Button title="Login" onPress={handleLogin} />
+      <TouchableOpacity onPress={()=>router.push("/signup")}>
+        <Text style={styles.signupText}>Don't have an account? Create account</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 };
@@ -63,7 +71,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: '100%',
+    width: '50%',
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
@@ -74,6 +82,10 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginBottom: 20,
+  },
+  signupText: {
+    color: 'blue',
+    textDecorationLine: 'underline',
   },
 });
 
