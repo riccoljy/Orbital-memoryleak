@@ -8,6 +8,8 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+
+  
   async function handleLogin() {
     //WIP -- Supabase/MongoDB user authentication
     if (!email || !password) {
