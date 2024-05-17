@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
-import Colors from '../../../constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
 import { useNavigation } from '@react-navigation/native';
@@ -29,13 +28,15 @@ const HomePage = () => {
         onPress={() =>navigation.navigate('chatFriends')} 
         style = {styles.input}> 
           <AntDesign name="wechat" size={24} color="black" />
-          <Text style = {{marginLeft: 20, marginRight:180}}>Chat With Friends</Text>
+          <Text style = {{marginLeft: 20, marginRight:195}}>Chat With Friends</Text>
           <AntDesign name="right" size={24} color="black" />
 
       </TouchableOpacity>
 
 
       <Text style={styles.title}>DISCOVER</Text>
+
+      <Text style = {styles.input}></Text>
 
     </SafeAreaView>
   );
