@@ -7,7 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 
+
 const HomePage = () => {
+  const router = useRouter();
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
@@ -15,7 +17,7 @@ const HomePage = () => {
 
 
       <TouchableOpacity 
-        onPress={() =>navigation.navigate('meetStudents')} 
+        onPress={() =>router.push('services/meetStudents')} 
         style = {styles.input}> 
           <FontAwesome5 name="user-friends" size={24} color="black" />
           <Text style = {{marginLeft: 20, marginRight:180}}>Meet New Students</Text>
@@ -25,7 +27,7 @@ const HomePage = () => {
       <br></br>
 
       <TouchableOpacity 
-        onPress={() =>navigation.navigate('chatFriends')} 
+        onPress={() =>router.push('services/chatFriends')} 
         style = {styles.input}> 
           <AntDesign name="wechat" size={24} color="black" />
           <Text style = {{marginLeft: 20, marginRight:195}}>Chat With Friends</Text>
@@ -46,7 +48,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 50,
     borderRadius:20,
-    backgroundColor:'lightpink'
   },
   title: {
     fontSize: 24,
