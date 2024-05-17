@@ -38,7 +38,15 @@ const HomePage = () => {
 
       <Text style={styles.title}>DISCOVER</Text>
 
-      <Text style = {styles.input}></Text>
+      <View style = {styles.box}>
+        <Text style = {styles.name}>Alex, 21</Text>
+        <br></br>
+        <Text style = {styles.course}>NUS • Business analytics </Text>
+        <br></br>
+        <Text style = {styles.bio}>Hi, currently doing bt1101 and am looking for a study buddy to get through this mod together.</Text>
+      </View>
+      
+
 
     </SafeAreaView>
   );
@@ -72,6 +80,25 @@ const styles = StyleSheet.create({
     height: 200,
     marginBottom: 20,
   },
+  name: {
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  course: {
+    fontSize: 24,
+  },
+  bio: {
+    fontSize: 18,
+    lineHeight: 25,
+  },
+  box: {
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 30
+    
+  }
 });
 
 export default HomePage;
