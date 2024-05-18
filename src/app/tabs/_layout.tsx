@@ -14,7 +14,7 @@ export default function RootLayout() {
     <Tabs 
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: '#F5F5DC'
+          backgroundColor: '#161622'
         }
       }}
     >
@@ -24,7 +24,7 @@ export default function RootLayout() {
           title: "Home",
           headerShown: false,
           tabBarIcon: () => (
-            <Ionicons name="home" size={24} color="black" />
+            <Ionicons name="home" size={24} color="white" />
           ),
           tabBarLabelPosition:'below-icon'
         }}
@@ -36,7 +36,7 @@ export default function RootLayout() {
           title: "Inbox",
           headerShown: false,
           tabBarIcon: () => (
-            <Octicons name="inbox" size={24} color="black" />
+            <Octicons name="inbox" size={24} color="white" />
           ),
           tabBarLabelPosition:'below-icon'
         }}
@@ -48,7 +48,7 @@ export default function RootLayout() {
           title: "Friends",
           headerShown: false,
           tabBarIcon: () => (
-            <FontAwesome5 name="user-friends" size={24} color="black" />
+            <FontAwesome5 name="user-friends" size={24} color="white" />
           ),
           tabBarLabelPosition:'below-icon'
         }}
@@ -60,7 +60,7 @@ export default function RootLayout() {
           title: "More",
           headerShown: false,
           tabBarIcon: () => (
-            <Feather name="more-horizontal" size={24} color="black" /> 
+            <Feather name="more-horizontal" size={24} color="white" /> 
           ),
           tabBarLabelPosition:'below-icon'
         }}
