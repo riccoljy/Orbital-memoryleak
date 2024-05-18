@@ -22,10 +22,8 @@ const LoginPage = () => {
     })
     console.log('hi', email, password,data, error);
     if (error) Alert.alert(error.message);
-    else router.push("/tabs/home");
-
-
-    Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+    else router.replace("/tabs/home");
+    // Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
 
   };
 
