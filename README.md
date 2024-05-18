@@ -23,7 +23,7 @@ npm install
 ```
 5. Launch the project locally
 ```
-npx expo start
+npm run start
 ```
 
 ## Supabase Database
@@ -32,6 +32,6 @@ To configure Supabase:
 2. Set up authentication in your project.
 3. Store your project's Supabase URL and API key in an `.env` file in the root directory like this:
 ```
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_public_api_key
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+EXPO_PUBLIC_SUPABASE_KEY=your_public_api_key
 ```
