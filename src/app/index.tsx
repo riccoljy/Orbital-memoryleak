@@ -11,6 +11,8 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+
+  
   async function handleLogin() {
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password.");
