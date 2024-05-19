@@ -11,8 +11,18 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.replace("/tabs/home");
+      }
+    };
+    checkSession();
+  }, [router]);
 
-  
+
+
   async function handleLogin() {
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password.");
@@ -22,11 +32,9 @@ const LoginPage = () => {
       email: email,
       password: password,
     })
-    console.log('hi', email, password,data, error);
+    console.log('hi', email, password, data, error);
     if (error) Alert.alert(error.message);
     else router.replace("/tabs/home");
-    // Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
-
   };
 
   return (
@@ -49,10 +57,10 @@ const LoginPage = () => {
         secureTextEntry
       />
       <Button title="Login" onPress={handleLogin} />
-      <TouchableOpacity onPress={()=>router.push("/signup")}>
+      <TouchableOpacity onPress={() => router.push("/signup")}>
         <Text style={styles.signupText}>Don't have an account? Create account</Text>
       </TouchableOpacity>
-      
+
     </View>
   );
 };
