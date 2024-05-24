@@ -49,10 +49,10 @@ const HomePage = () => {
 
         <View style = {styles.like}>
             <TouchableOpacity>
-              <Image source={like} style = {styles.image}/>
+              <Image source={dislike} style = {styles.image}/>
             </TouchableOpacity>
             <TouchableOpacity>
-              <Image source={dislike} style = {styles.image}/>
+              <Image source={like} style = {styles.image}/>
             </TouchableOpacity>
         </View>
 
@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    height: 100,
-    width: 100,
+    height: 120,
+    width: 120,
     marginHorizontal: 10,
   },
 });
