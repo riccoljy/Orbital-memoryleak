@@ -14,6 +14,7 @@ const HomePage = () => {
   const router = useRouter();
   const navigation = useNavigation();
   return (
+
     <SafeAreaView style={styles.container}>
       <ScrollView>
           <Text style={styles.title}>SELECT A SERVICE</Text>
@@ -60,6 +61,7 @@ const HomePage = () => {
 
 
     </SafeAreaView>
+
   );
 };
 
