@@ -6,6 +6,7 @@ import { AntDesign,Ionicons,Entypo,MaterialIcons } from '@expo/vector-icons';
 
 
 const more = () => {
+  
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
