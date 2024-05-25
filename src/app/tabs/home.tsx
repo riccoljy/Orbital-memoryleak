@@ -8,8 +8,45 @@ import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
+import Swiper from "react-native-deck-swiper";
+
+const sampleData = [
+  {
+    name: 'Alex',
+    id:1,
+    age: 21,
+    uni:'NUS',
+    course: 'Business Analytics',
+    bio: 'Hi, currently doing bt1101 and am looking for a study buddy to get through this mod together.'
 
 
+  },
+  ,
+  {
+    name: 'Emma',
+    id:2,
+    age: 22,
+    uni: 'NTU',
+    course: 'Computer Science',
+    bio: 'Hey there! I am taking CS2100 and would love to form a study group. Let’s ace this together!'
+  },
+  {
+    name: 'John',
+    id:3,
+    age: 20,
+    uni: 'SMU',
+    course: 'Economics',
+    bio: 'Hello! Currently enrolled in EC101. Looking for someone to discuss and study with. Let’s help each other out!'
+  },
+  {
+    name: 'Sophia',
+    id:4,
+    age: 23,
+    uni: 'NUS',
+    course: 'Mechanical Engineering',
+    bio: 'Hi everyone! I am in ME2135 this semester and would love to find a study partner. Let’s tackle this module together!'
+  }
+]
 const HomePage = () => {
   const router = useRouter();
   const navigation = useNavigation();
@@ -24,7 +61,7 @@ const HomePage = () => {
             onPress={() =>router.push('services/meetStudents')} 
             style = {styles.input}> 
               <FontAwesome5 name="user-friends" size={30} color="#D3D3D3" />
-              <Text style = {styles.service1}>Meet New Students</Text>
+              <Text style = {styles.service1}>Filter Students</Text>
               <AntDesign name="right" size={30} color="#D3D3D3" />
           </TouchableOpacity>
 
@@ -39,14 +76,35 @@ const HomePage = () => {
 
           <br></br>
           <Text style={styles.title}>DISCOVER</Text>
+        <View style={{flex:1}}>
+        
+          <Swiper
+            cards={sampleData}
+            containerStyle={{backgroundColor:'transparent'}}
+            cardIndex={0}
+            animateCardOpacity
+            stackSize={5}
+            verticalSwipe={false}
+            renderCard={(card)=>{
+              return card ? (
+                <View key={card.id} style={styles.card}>
+                  <View style={styles.cardDet}>
+                    <Text style={styles.name}>{card.name},{card.age}</Text>
+                    <br></br>
+                    <Text style = {styles.course}>{card.uni} • {card.course}</Text>
+                    <br></br>
+                    <Text style = {styles.bio}>{card.bio}</Text>
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.noCards}>
+                  <Text style={styles.noText}>No More Students</Text>
+                </View>
 
-        <View style = {styles.box}>
-            <Text style = {styles.name}>Alex, 21</Text>
-            <br></br>
-            <Text style = {styles.course}>NUS • Business analytics </Text>
-            <br></br>
-            <Text style = {styles.bio}>Hi, currently doing bt1101 and am looking for a study buddy to get through this mod together.</Text>
-        </View> 
+              )
+            }}
+          />
+        </View>
 
         <View style = {styles.like}>
             <TouchableOpacity>
@@ -118,16 +176,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 30,
     fontWeight: 'bold',
-    color:'#D3D3D3'
   },
   course: {
     fontSize: 24,
-    color:'#D3D3D3'
   },
   bio: {
     fontSize: 18,
-    lineHeight: 25,
-    color:'#D3D3D3'
   },
   like: {
     flexDirection: 'row',
@@ -139,6 +193,40 @@ const styles = StyleSheet.create({
     width: 120,
     marginHorizontal: 10,
   },
+  card:{
+    backgroundColor:'white',
+    height:'40%',
+    borderRadius:10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal:20,
+  },
+  noCards: {
+    backgroundColor: 'white',
+    height: '40%',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal:20,
+    
+  },
+  cardDet:{
+    position:'absolute',
+    backgroundColor:'white',
+    width:'100%',
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    
+   
+  },
+  noText:{
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingBottom: 20,
+  }
 });
 
 export default HomePage;
