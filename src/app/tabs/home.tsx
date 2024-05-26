@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useRef} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
-import { useNavigation } from '@react-navigation/native';
-import { AntDesign } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign,FontAwesome5 } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
@@ -19,16 +17,15 @@ const sampleData = [
     course: 'Business Analytics',
     bio: 'Hi, currently doing bt1101 and am looking for a study buddy to get through this mod together.'
 
-
   },
-  ,
+  
   {
     name: 'Emma',
-    id:2,
+    id:7,
     age: 22,
     uni: 'NTU',
     course: 'Computer Science',
-    bio: 'Hey there! I am taking CS2100 and would love to form a study group. Let’s ace this together!'
+    bio: "Hey there! I am taking CS2100 and would love to form a study group. Let's ace this together!"
   },
   {
     name: 'John',
@@ -36,7 +33,7 @@ const sampleData = [
     age: 20,
     uni: 'SMU',
     course: 'Economics',
-    bio: 'Hello! Currently enrolled in EC101. Looking for someone to discuss and study with. Let’s help each other out!'
+    bio: "Hello! Currently enrolled in EC101. Looking for someone to discuss and study with. Let's help each other out!"
   },
   {
     name: 'Sophia',
@@ -44,16 +41,17 @@ const sampleData = [
     age: 23,
     uni: 'NUS',
     course: 'Mechanical Engineering',
-    bio: 'Hi everyone! I am in ME2135 this semester and would love to find a study partner. Let’s tackle this module together!'
+    bio: "Hi everyone! I am in ME2135 this semester and would love to find a study partner. Let's tackle this module together!"
   }
-]
+];
 const HomePage = () => {
   const router = useRouter();
-  const navigation = useNavigation();
+  const animRef = useRef(null);
   return (
 
     <SafeAreaView style={styles.container}>
       <ScrollView>
+        <View>
           <Text style={styles.title}>SELECT A SERVICE</Text>
 
 
@@ -76,41 +74,48 @@ const HomePage = () => {
 
           <br></br>
           <Text style={styles.title}>DISCOVER</Text>
+
+        </View>
+
         <View style={{flex:1}}>
         
           <Swiper
-            cards={sampleData}
+            ref={animRef}
+            cards={sampleData}          
             containerStyle={{backgroundColor:'transparent'}}
             cardIndex={0}
             animateCardOpacity
-            stackSize={5}
+            stackSize={4}
             verticalSwipe={false}
             renderCard={(card)=>{
-              return card ? (
-                <View key={card.id} style={styles.card}>
-                  <View style={styles.cardDet}>
-                    <Text style={styles.name}>{card.name},{card.age}</Text>
-                    <br></br>
-                    <Text style = {styles.course}>{card.uni} • {card.course}</Text>
-                    <br></br>
-                    <Text style = {styles.bio}>{card.bio}</Text>
+              if (card) {
+                return (
+                  <View key={card.id} style={styles.card}>
+                    <View style={styles.cardDet}>
+                      <Text style={styles.name}>{card.name},{card.age}</Text>
+                      <br></br>
+                      <Text style = {styles.course}>{card.uni} • {card.course}</Text>
+                      <br></br>
+                      <Text style = {styles.bio}>{card.bio}</Text>
+                    </View>
                   </View>
-                </View>
-              ) : (
+                );
+              }
+            return (
                 <View style={styles.noCards}>
-                  <Text style={styles.noText}>No More Students</Text>
+                  <Text style={styles.noText}>No More Students :(</Text>
                 </View>
 
-              )
+              );
             }}
           />
         </View>
 
         <View style = {styles.like}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>animRef.current.swipeLeft()}>
               <Image source={dislike} style = {styles.image}/>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>animRef.current.swipeRight()}>
               <Image source={like} style = {styles.image}/>
             </TouchableOpacity>
         </View>
@@ -184,8 +189,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   like: {
+    marginTop:450,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
   },
   image: {
