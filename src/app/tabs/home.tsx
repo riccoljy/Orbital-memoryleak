@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   card:{
-    backgroundColor:'white',
+    backgroundColor:'beige',
     height:'40%',
     borderRadius:10,
     justifyContent: 'center',
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     marginHorizontal:20,
   },
   noCards: {
-    backgroundColor: 'white',
+    backgroundColor: 'beige',
     height: '40%',
     borderRadius: 10,
     justifyContent: 'center',
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   cardDet:{
     position:'absolute',
-    backgroundColor:'white',
+    backgroundColor:'beige',
     width:'100%',
     height: 80,
     justifyContent: 'center',
