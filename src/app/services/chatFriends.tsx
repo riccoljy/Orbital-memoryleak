@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection:'row',
-    marginHorizontal:10,
+    marginHorizontal:20,
     marginTop:30,
     paddingLeft:15,
     paddingVertical:20,
