@@ -6,7 +6,7 @@ export default function RootLayout() {
   return (
     
     <Stack>
-      <Stack.Screen name="sign-in" 
+      <Stack.Screen name="index" 
       options={({title: 'Sign in'})}
       />
       <Stack.Screen name="signup"
