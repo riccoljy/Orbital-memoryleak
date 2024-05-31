@@ -72,7 +72,6 @@ const HomePage = () => {
 
           </TouchableOpacity>
 
-          <br></br>
           <Text style={styles.title}>DISCOVER</Text>
 
         </View>
@@ -93,9 +92,7 @@ const HomePage = () => {
                   <View key={card.id} style={styles.card}>
                     <View style={styles.cardDet}>
                       <Text style={styles.name}>{card.name},{card.age}</Text>
-                      <br></br>
                       <Text style = {styles.course}>{card.uni} • {card.course}</Text>
-                      <br></br>
                       <Text style = {styles.bio}>{card.bio}</Text>
                     </View>
                   </View>
