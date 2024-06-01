@@ -14,6 +14,7 @@ const LoginPage = () => {
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      console.log("session =", session);
       if (session) {
         router.replace("/tabs/home");
       }
