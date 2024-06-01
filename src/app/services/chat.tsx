@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View,TextInput,Button,Keyboard,Platform } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useNavigation } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Ionicons,FontAwesome6 } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
@@ -10,22 +10,24 @@ const chat = () => {
     const navigation = useNavigation();
     const [messages,sendMessage] = useState([]);
     const [input,setInput] = useState("");
+    const {age,name,chat} = useLocalSearchParams();
 
     return (
         <SafeAreaView style = {styles.container}>
             <View style={styles.header}> 
                 <TouchableOpacity onPress={()=>navigation.goBack()}> 
-                <Ionicons name="chevron-back" size={30} color="white" />
+                <Ionicons name="chevron-back" size={30} color="white"/>
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Alex</Text>
+                <FontAwesome6 name="circle-user" size={30} color="white" style={{marginLeft:10}}/>
+                <View style={{flexDirection:'column',marginLeft:5}}>
+                  <Text style={styles.headerText}>{name}, {age} </Text>                  
+                </View>
             </View>
 
             <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}
-                style={{bottom:-680}}
+                style={{bottom:-540}}
                 keyboardVerticalOffset={10}>
-                
-               
-
+  
                 <View style={styles.inputBox}>
                     <TextInput style={styles.input}
                         placeholder='Type Message...'
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
       headerText: {
         fontSize: 30,
         color:'white',
-        marginLeft:10,
+        marginLeft:5,
         fontWeight:700
       },
       
@@ -56,6 +58,10 @@ const styles = StyleSheet.create({
         marginTop:10,
         flexDirection:'row',
         backgroundColor:'#161622',
+        borderBottomColor:'grey',
+        borderBottomWidth:1,
+        alignItems:'center',
+        paddingBottom:15
         
       },
       inputBox: {

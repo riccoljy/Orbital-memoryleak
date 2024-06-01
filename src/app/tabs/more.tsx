@@ -1,4 +1,5 @@
-import { Alert, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+
+import { Alert, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from "expo-router";
@@ -37,80 +38,83 @@ const more = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.title}>
-        <Text style={styles.title}>Settings</Text>
-      </View>
+      <ScrollView>
+        <View style={styles.title}>
+          <Text style={styles.title}>Settings</Text>
+        </View>
+  
+        <View style ={styles.container}>
+          <View>
+          <Text style={styles.setTitle}>Account Settings</Text>
+          <TouchableOpacity 
+              onPress={() =>router.push('settings/editProf')} 
+              style = {styles.editPro}> 
+                <AntDesign name="user" size={24} color="white" />
+                <Text style = {styles.setting}>Edit Profile</Text>
 
-      <View style={styles.container}>
-        <Text style={styles.setTitle}>Account Settings</Text>
-        <TouchableOpacity
-          onPress={() => router.push('settings/editProf')}
-          style={styles.editPro}>
-          <AntDesign name="user" size={24} color="white" />
-          <Text style={styles.setting}>Edit Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+              onPress={() =>router.push('settings/notif')} 
+              style = {styles.setbox}> 
+                <Ionicons name="notifications" size={24} color="white" />
+                <Text style = {styles.setting}>Notifications</Text>
 
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => router.push('settings/notif')}
-          style={styles.setbox}>
-          <Ionicons name="notifications" size={24} color="white" />
-          <Text style={styles.setting}>Notifications</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+              onPress={() =>router.push('settings/privacy')} 
+              style = {styles.setbox}> 
+                <Entypo name="lock" size={24} color="white" />
+                <Text style = {styles.setting}>Privacy</Text>
 
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => router.push('settings/privacy')}
-          style={styles.setbox}>
-          <Entypo name="lock" size={24} color="white" />
-          <Text style={styles.setting}>Privacy</Text>
+          </TouchableOpacity>
 
-        </TouchableOpacity>
+          <Text style={styles.space}></Text>
+          </View>
+          <View>
+          <Text style={styles.setTitle}>Support & About</Text>
+          <TouchableOpacity 
+              onPress={() =>router.push('settings/help')} 
+              style = {styles.editPro}> 
+                <Entypo name="help-with-circle" size={24} color="white" />
+                <Text style = {styles.setting}>Help & Support</Text>
 
-        <Text style={styles.space}></Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+              onPress={() =>router.push('settings/terms')} 
+              style = {styles.setbox}> 
+                <Ionicons name="information-circle-sharp" size={30} color="white" />
+                <Text style = {styles.setting}>Terms & Policies</Text>
 
-        <Text style={styles.setTitle}>Support & About</Text>
-        <TouchableOpacity
-          onPress={() => router.push('settings/help')}
-          style={styles.editPro}>
-          <Entypo name="help-with-circle" size={24} color="white" />
-          <Text style={styles.setting}>Help & Support</Text>
+          </TouchableOpacity>
 
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => router.push('settings/terms')}
-          style={styles.setbox}>
-          <Ionicons name="information-circle-sharp" size={30} color="white" />
-          <Text style={styles.setting}>Terms & Policies</Text>
+          <Text style={styles.space}></Text>
+          </View>
+          <View>
+          <Text style={styles.setTitle}>Actions</Text>
+          <TouchableOpacity 
+              onPress={() =>router.push('settings/report')} 
+              style = {styles.editPro}> 
+                <Entypo name="flag" size={24} color="white" />
+                <Text style = {styles.setting}>Report a Bug</Text>
 
-        </TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity 
+              onPress={() =>router.push('settings/deleteAcc')} 
+              style = {styles.setbox}> 
+                <MaterialIcons name="delete" size={24} color="white" />
+                <Text style = {styles.setting}>Delete Account</Text>
 
-        <Text style={styles.space}></Text>
-
-        <Text style={styles.setTitle}>Actions</Text>
-        <TouchableOpacity
-          onPress={() => router.push('settings/report')}
-          style={styles.editPro}>
-          <Entypo name="flag" size={24} color="white" />
-          <Text style={styles.setting}>Report a Bug</Text>
-
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => router.push('settings/deleteAcc')}
-          style={styles.setbox}>
-          <MaterialIcons name="delete" size={24} color="white" />
-          <Text style={styles.setting}>Delete Account</Text>
-
-        </TouchableOpacity>
-        <TouchableOpacity
+          </TouchableOpacity>
+            <TouchableOpacity
           onPress={confirmLogout}
           style={styles.setbox}>
           <MaterialIcons name="logout" size={24} color="white" />
           <Text style={styles.setting}>Log out</Text>
 
         </TouchableOpacity>
-      </View>
-
-
-
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -125,11 +129,12 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 28,
-    fontWeight: 800,
-    alignItems: 'center',
-    paddingTop: 10,
-    color: 'white',
-    paddingBottom: 10,
+
+    fontWeight:'bold',
+    alignItems:'center',
+    paddingTop:10,
+    color:'white',
+    paddingBottom:10,
 
   },
   space: {
@@ -137,10 +142,11 @@ const styles = StyleSheet.create({
   },
   setTitle: {
     fontSize: 20,
-    fontWeight: 700,
-    color: 'white',
-    paddingLeft: 20,
-    marginTop: 20
+
+    fontWeight:'bold',
+    color:'white',
+    paddingLeft:20,
+    marginTop:20
   },
   setting: {
     fontSize: 17,
@@ -148,22 +154,22 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   editPro: {
-    height: 40,
     flexDirection: 'row',
     borderWidth: 0,
     borderRadius: 1,
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    marginTop: 10
+
+    paddingVertical: 10,
+    paddingHorizontal:15,
+    alignItems:'center',
+     marginTop:10
   },
   setbox: {
-    height: 40,
     flexDirection: 'row',
     borderWidth: 0,
     borderRadius: 1,
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    alignItems: 'center',
+
+    paddingVertical: 10,
+    paddingHorizontal:13,
+    alignItems:'center',
   },
 })
