@@ -3,6 +3,8 @@ import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpaci
 import unibudslogo from '@/assets/images/unibuds.png';
 import { supabase } from "@/src/supabase/supabase.js";
 import { useRouter } from "expo-router";
+import { Ionicons } from '@expo/vector-icons'; // You may need to install this package
+
 
 
 
@@ -10,11 +12,13 @@ const LoginPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // State to track password visibility
+
 
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      console.log("session =", session);
+      console.log("session2 =", session);
       if (session) {
         router.replace("/tabs/home");
       }
@@ -38,13 +42,19 @@ const LoginPage = () => {
     else router.replace("/tabs/home");
   };
 
+  // const togglePasswordVisibility = () => {
+  //   setShowPassword(!showPassword);
+  //   console.log("showPW=", showPassword);
+  // };
+
   return (
-    <View style={styles.container}>
+      <View style={styles.container}>
       <Image source={unibudslogo} style={styles.logo} />
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#888"
         onChangeText={setEmail}
         value={email}
         keyboardType="email-address"
@@ -53,20 +63,26 @@ const LoginPage = () => {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#888"
         onChangeText={setPassword}
         value={password}
-        secureTextEntry
+        secureTextEntry={!showPassword}
       />
+      {/* <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
+        <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="gray" />
+      </TouchableOpacity> */}
+        
       <Button title="Login" onPress={handleLogin} />
       <TouchableOpacity onPress={() => router.push("/signup")}>
         <Text style={styles.signupText}>Don't have an account? Create account</Text>
       </TouchableOpacity>
-
-    </View>
+</View>
   );
 };
 
 const styles = StyleSheet.create({
+
+
   container: {
     flex: 1,
     justifyContent: 'center',

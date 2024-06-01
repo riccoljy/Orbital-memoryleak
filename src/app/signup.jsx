@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
 import unibudslogo from '@/assets/images/unibuds.png';
 import { supabase } from "@/src/supabase/supabase.js";
+import { useRouter } from "expo-router";
 
 
 const Registration = () => {
@@ -9,21 +10,35 @@ const Registration = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [password2, setPassword2] = useState('');
+  const router = useRouter();
   async function handleRegister() {
-    //WIP -- Supabase/MongoDB user authentication
+
+    if (!password || !password2) {
+      Alert.alert("Error", "Passwords don't match");
+      return;
+    }
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
     }
     const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password
-    })
-    console.log('hi', error);
-    if (error) Alert.alert(error.message)
 
-    Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+      email: email,
+      password: password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          new_user: true,
+        }
+      }
+    })
+    if (!error) {
+      Alert.alert("Please check your inbox for verification");
+      router.back();
+    }
+    else Alert.alert(error.message)
 
   };
 
@@ -34,6 +49,7 @@ const Registration = () => {
       <TextInput
         style={styles.input}
         placeholder="First name"
+        placeholderTextColor="#888"
         onChangeText={setFirstName}
         value={firstName}
         autoCapitalize="words"
@@ -41,6 +57,7 @@ const Registration = () => {
       <TextInput
         style={styles.input}
         placeholder="Last name"
+        placeholderTextColor="#888"
         onChangeText={setLastName}
         value={lastName}
         autoCapitalize="words"
@@ -48,6 +65,7 @@ const Registration = () => {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#888"
         onChangeText={setEmail}
         value={email}
         keyboardType="email-address"
@@ -56,8 +74,17 @@ const Registration = () => {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#888"
         onChangeText={setPassword}
         value={password}
+        secureTextEntry
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter password again"
+        placeholderTextColor="#888"
+        onChangeText={setPassword2}
+        value={password2}
         secureTextEntry
       />
       <Button title="Register" onPress={handleRegister} />
