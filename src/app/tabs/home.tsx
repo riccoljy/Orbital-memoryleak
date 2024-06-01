@@ -1,9 +1,9 @@
-import React, {useRef} from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
-import { AntDesign,FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
@@ -11,17 +11,17 @@ import Swiper from "react-native-deck-swiper";
 const sampleData = [
   {
     name: 'Alex',
-    id:1,
+    id: 1,
     age: 21,
-    uni:'NUS',
+    uni: 'NUS',
     course: 'Business Analytics',
     bio: 'Hi, currently doing bt1101 and am looking for a study buddy.'
 
   },
-  
+
   {
     name: 'Emma',
-    id:7,
+    id: 7,
     age: 22,
     uni: 'NTU',
     course: 'Computer Science',
@@ -29,7 +29,7 @@ const sampleData = [
   },
   {
     name: 'John',
-    id:3,
+    id: 3,
     age: 20,
     uni: 'SMU',
     course: 'Economics',
@@ -37,39 +37,56 @@ const sampleData = [
   },
   {
     name: 'Sophia',
-    id:4,
+    id: 4,
     age: 23,
     uni: 'NUS',
     course: 'Mechanical Engineering',
     bio: "Hi everyone! I am in ME2135 this semester and would love to find a study buddy."
   }
 ];
+
+
 const HomePage = () => {
   const router = useRouter();
-  
-  const animRef = useRef(null);
-  return (
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log("session1 =", session);
+      if (!session) router.replace("/");
+      
+      const { data: { user: {user_metadata} } } = await supabase.auth.getUser();
+      if (user_metadata.new_user || !user_metadata.university) router.push('/profileSettings/completeRegistration');
+
+    };
+    checkSession();
+  }, [router]);
+
+  const animRef = useRef(null);
+
+
+
+  return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View>
           <Text style={styles.title}>SELECT A SERVICE</Text>
 
 
-          <TouchableOpacity 
-            onPress={() =>router.push('services/meetStudents')} 
-            style = {styles.input}> 
-              <FontAwesome5 name="user-friends" size={24} color="#D3D3D3" />
-              <Text style = {styles.service1}>Filter Students</Text>
-              <AntDesign name="right" size={24} color="#D3D3D3" />
+          <TouchableOpacity
+            onPress={() => router.push('services/meetStudents')}
+            style={styles.input}>
+            <FontAwesome5 name="user-friends" size={24} color="#D3D3D3" />
+            <Text style={styles.service1}>Filter Students</Text>
+            <AntDesign name="right" size={24} color="#D3D3D3" />
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            onPress={() =>router.push('services/chatFriends')} 
-            style = {styles.input2}> 
-              <AntDesign name="wechat" size={24} color="#D3D3D3" />
-              <Text style = {styles.service2}>Chat With Friends</Text>
-              <AntDesign name="right" size={24} color="#D3D3D3" />
+          <TouchableOpacity
+            onPress={() => router.push('services/chatFriends')}
+            style={styles.input2}>
+            <AntDesign name="wechat" size={24} color="#D3D3D3" />
+            <Text style={styles.service2}>Chat With Friends</Text>
+            <AntDesign name="right" size={24} color="#D3D3D3" />
 
           </TouchableOpacity>
 
@@ -78,31 +95,32 @@ const HomePage = () => {
         </View>
 
         <View>
-        
+
           <Swiper
             ref={animRef}
-            cards={sampleData}          
-            containerStyle={{backgroundColor:'transparent'}}
+            cards={sampleData}
+            containerStyle={{ backgroundColor: 'transparent' }}
             cardIndex={0}
             animateCardOpacity
             stackSize={4}
             verticalSwipe={false}
-            renderCard={(card)=>{
+            renderCard={(card) => {
               if (card) {
                 return (
                   <View key={card.id} style={styles.card}>
                     <View style={styles.cardDet}>
                       <Text style={styles.name}>{card.name},{card.age}</Text>
+
                       <Text style={styles.space}></Text>
-                      <Text style = {styles.course}>{card.uni} • {card.course}</Text>
+                      <Text style={styles.course}>{card.uni} • {card.course}</Text>
                       <Text style={styles.space}></Text>
-                      <Text style = {styles.bio}>{card.bio}</Text>
-                      
+                      <Text style={styles.bio}>{card.bio}</Text>
+
                     </View>
                   </View>
                 );
               }
-            return (
+              return (
                 <View style={styles.noCards}>
                   <Text style={styles.noText}>No More Students :(</Text>
                 </View>
@@ -112,13 +130,13 @@ const HomePage = () => {
           />
         </View>
 
-        <View style = {styles.like}>
-            <TouchableOpacity onPress={()=>animRef.current.swipeLeft()}>
-              <Image source={dislike} style = {styles.image}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>animRef.current.swipeRight()}>
-              <Image source={like} style = {styles.image}/>
-            </TouchableOpacity>
+        <View style={styles.like}>
+          <TouchableOpacity onPress={() => animRef.current.swipeLeft()}>
+            <Image source={dislike} style={styles.image} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => animRef.current.swipeRight()}>
+            <Image source={like} style={styles.image} />
+          </TouchableOpacity>
         </View>
 
       </ScrollView>
@@ -132,30 +150,30 @@ const HomePage = () => {
 const styles = StyleSheet.create({
   service1: {
     marginLeft: 20,
-     marginRight:100,
-     fontSize:18,
-     color:'#D3D3D3',
+    marginRight: 100,
+    fontSize: 18,
+    color: '#D3D3D3',
   },
   service2: {
     marginLeft: 20,
-     marginRight:80,
-     fontSize:18,
-     color:'#D3D3D3'
+    marginRight: 80,
+    fontSize: 18,
+    color: '#D3D3D3'
   },
   container: {
     flex: 1,
-    backgroundColor:'#161622',
+    backgroundColor: '#161622',
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 0,
-    paddingTop:20,
+    paddingTop: 20,
     paddingHorizontal: 20,
-    color:'#D3D3D3'
+    color: '#D3D3D3'
   },
   space: {
-    margin:5
+    margin: 5
   },
   input: {
     flexDirection: 'row',
@@ -163,11 +181,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     marginBottom: 10,
-    marginHorizontal:20,
+    marginHorizontal: 20,
     paddingVertical: 20,
-    marginTop:50,
-    paddingHorizontal:20,
-    alignItems:'center',
+    marginTop: 50,
+    paddingHorizontal: 20,
+    alignItems: 'center',
   },
   input2: {
     flexDirection: 'row',
@@ -175,11 +193,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     marginBottom: 10,
-    marginHorizontal:20,
+    marginHorizontal: 20,
     paddingVertical: 20,
-    marginTop:20,
-    paddingHorizontal:20,
-    alignItems:'center',
+    marginTop: 20,
+    paddingHorizontal: 20,
+    alignItems: 'center',
   },
   box: {
     borderWidth: 1,
@@ -187,8 +205,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 20,
     paddingVertical: 30,
-    marginBottom:40,
-    marginHorizontal:20,
+    marginBottom: 40,
+    marginHorizontal: 20,
   },
   logo: {
     width: 100,
@@ -204,10 +222,10 @@ const styles = StyleSheet.create({
   },
   bio: {
     fontSize: 15,
-  
+
   },
   like: {
-    marginTop:420,
+    marginTop: 420,
     flexDirection: 'row',
     justifyContent: 'center',
   },
@@ -216,14 +234,14 @@ const styles = StyleSheet.create({
     width: 100,
     marginHorizontal: 10,
   },
-  card:{
-    backgroundColor:'beige',
-    height:'40%',
-    borderRadius:10,
+  card: {
+    backgroundColor: 'beige',
+    height: '40%',
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal:20,
-    marginTop:-10
+    marginHorizontal: 20,
+    marginTop: -10
   },
   noCards: {
     backgroundColor: 'beige',
@@ -231,22 +249,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal:20,
-    marginTop:-10
-    
+    marginHorizontal: 20,
+    marginTop: -10
+
   },
-  cardDet:{
-    position:'absolute',
-    backgroundColor:'beige',
-    width:'100%',
+  cardDet: {
+    position: 'absolute',
+    backgroundColor: 'beige',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    
-   
+
+
   },
-  noText:{
+  noText: {
     fontSize: 18,
     fontWeight: 'bold',
     paddingBottom: 20,
