@@ -15,7 +15,7 @@ const sampleData = [
     age: 21,
     uni:'NUS',
     course: 'Business Analytics',
-    bio: 'Hi, currently doing bt1101 and am looking for a study buddy to get through this mod together.'
+    bio: 'Hi, currently doing bt1101 and am looking for a study buddy.'
 
   },
   
@@ -25,7 +25,7 @@ const sampleData = [
     age: 22,
     uni: 'NTU',
     course: 'Computer Science',
-    bio: "Hey there! I am taking CS2100 and would love to form a study group. Let's ace this together!"
+    bio: "Hey there! I am taking CS2100 and would love a study group."
   },
   {
     name: 'John',
@@ -33,7 +33,7 @@ const sampleData = [
     age: 20,
     uni: 'SMU',
     course: 'Economics',
-    bio: "Hello! Currently enrolled in EC101. Looking for someone to discuss and study with. Let's help each other out!"
+    bio: "Hello! Currently enrolled in EC101, looking for someone to study with."
   },
   {
     name: 'Sophia',
@@ -41,11 +41,12 @@ const sampleData = [
     age: 23,
     uni: 'NUS',
     course: 'Mechanical Engineering',
-    bio: "Hi everyone! I am in ME2135 this semester and would love to find a study partner. Let's tackle this module together!"
+    bio: "Hi everyone! I am in ME2135 this semester and would love to find a study buddy."
   }
 ];
 const HomePage = () => {
   const router = useRouter();
+  
   const animRef = useRef(null);
   return (
 
@@ -58,26 +59,25 @@ const HomePage = () => {
           <TouchableOpacity 
             onPress={() =>router.push('services/meetStudents')} 
             style = {styles.input}> 
-              <FontAwesome5 name="user-friends" size={30} color="#D3D3D3" />
+              <FontAwesome5 name="user-friends" size={24} color="#D3D3D3" />
               <Text style = {styles.service1}>Filter Students</Text>
-              <AntDesign name="right" size={30} color="#D3D3D3" />
+              <AntDesign name="right" size={24} color="#D3D3D3" />
           </TouchableOpacity>
 
           <TouchableOpacity 
             onPress={() =>router.push('services/chatFriends')} 
-            style = {styles.input}> 
-              <AntDesign name="wechat" size={30} color="#D3D3D3" />
+            style = {styles.input2}> 
+              <AntDesign name="wechat" size={24} color="#D3D3D3" />
               <Text style = {styles.service2}>Chat With Friends</Text>
-              <AntDesign name="right" size={30} color="#D3D3D3" />
+              <AntDesign name="right" size={24} color="#D3D3D3" />
 
           </TouchableOpacity>
 
-          <br></br>
           <Text style={styles.title}>DISCOVER</Text>
 
         </View>
 
-        <View style={{flex:1}}>
+        <View>
         
           <Swiper
             ref={animRef}
@@ -93,10 +93,11 @@ const HomePage = () => {
                   <View key={card.id} style={styles.card}>
                     <View style={styles.cardDet}>
                       <Text style={styles.name}>{card.name},{card.age}</Text>
-                      <br></br>
+                      <Text style={styles.space}></Text>
                       <Text style = {styles.course}>{card.uni} • {card.course}</Text>
-                      <br></br>
+                      <Text style={styles.space}></Text>
                       <Text style = {styles.bio}>{card.bio}</Text>
+                      
                     </View>
                   </View>
                 );
@@ -131,13 +132,13 @@ const HomePage = () => {
 const styles = StyleSheet.create({
   service1: {
     marginLeft: 20,
-     marginRight:300,
+     marginRight:100,
      fontSize:18,
-     color:'#D3D3D3'
+     color:'#D3D3D3',
   },
   service2: {
     marginLeft: 20,
-     marginRight:319,
+     marginRight:80,
      fontSize:18,
      color:'#D3D3D3'
   },
@@ -148,19 +149,35 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 20,
-    padding: 20,
+    marginBottom: 0,
+    paddingTop:20,
+    paddingHorizontal: 20,
     color:'#D3D3D3'
   },
+  space: {
+    margin:5
+  },
   input: {
-    height: 40,
     flexDirection: 'row',
     borderColor: '#D3D3D3',
     borderWidth: 1,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     marginHorizontal:20,
-    paddingVertical: 50,
+    paddingVertical: 20,
+    marginTop:50,
+    paddingHorizontal:20,
+    alignItems:'center',
+  },
+  input2: {
+    flexDirection: 'row',
+    borderColor: '#D3D3D3',
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginHorizontal:20,
+    paddingVertical: 20,
+    marginTop:20,
     paddingHorizontal:20,
     alignItems:'center',
   },
@@ -174,8 +191,8 @@ const styles = StyleSheet.create({
     marginHorizontal:20,
   },
   logo: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     marginBottom: 20,
   },
   name: {
@@ -186,16 +203,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   bio: {
-    fontSize: 18,
+    fontSize: 15,
+  
   },
   like: {
-    marginTop:450,
+    marginTop:420,
     flexDirection: 'row',
     justifyContent: 'center',
   },
   image: {
-    height: 120,
-    width: 120,
+    height: 100,
+    width: 100,
     marginHorizontal: 10,
   },
   card:{
@@ -205,6 +223,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal:20,
+    marginTop:-10
   },
   noCards: {
     backgroundColor: 'beige',
@@ -213,13 +232,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal:20,
+    marginTop:-10
     
   },
   cardDet:{
     position:'absolute',
     backgroundColor:'beige',
     width:'100%',
-    height: 80,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
