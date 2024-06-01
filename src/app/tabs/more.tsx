@@ -1,13 +1,41 @@
-import { StyleSheet, Text, View,TouchableOpacity,ScrollView } from 'react-native'
+
+import { Alert, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from "expo-router";
-import { AntDesign,Ionicons,Entypo,MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, Entypo, MaterialIcons } from '@expo/vector-icons';
+import { supabase } from "@/src/supabase/supabase.js";
+
+
 
 
 const more = () => {
-  
   const router = useRouter();
+
+  async function logout() {
+    const { error } = await supabase.auth.signOut()
+    let sessionObject = await supabase.auth.getSession();
+    if (!sessionObject.data.session) router.push('/');
+  }
+
+  const confirmLogout = () => {
+    Alert.alert(
+      "Confirm Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Logout",
+          onPress: logout
+        }
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -77,6 +105,13 @@ const more = () => {
                 <Text style = {styles.setting}>Delete Account</Text>
 
           </TouchableOpacity>
+            <TouchableOpacity
+          onPress={confirmLogout}
+          style={styles.setbox}>
+          <MaterialIcons name="logout" size={24} color="white" />
+          <Text style={styles.setting}>Log out</Text>
+
+        </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -89,23 +124,25 @@ export default more
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#161622',
+    backgroundColor: '#161622',
   },
-  
+
   title: {
     fontSize: 28,
+
     fontWeight:'bold',
     alignItems:'center',
     paddingTop:10,
     color:'white',
     paddingBottom:10,
-    
+
   },
   space: {
-    margin:10
+    margin: 10
   },
   setTitle: {
     fontSize: 20,
+
     fontWeight:'bold',
     color:'white',
     paddingLeft:20,
@@ -113,13 +150,14 @@ const styles = StyleSheet.create({
   },
   setting: {
     fontSize: 17,
-    color:'white',
-    paddingLeft:20
+    color: 'white',
+    paddingLeft: 20
   },
   editPro: {
     flexDirection: 'row',
     borderWidth: 0,
     borderRadius: 1,
+
     paddingVertical: 10,
     paddingHorizontal:15,
     alignItems:'center',
@@ -129,6 +167,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderWidth: 0,
     borderRadius: 1,
+
     paddingVertical: 10,
     paddingHorizontal:13,
     alignItems:'center',

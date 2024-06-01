@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -46,7 +46,18 @@ const sampleData = [
 ];
 const HomePage = () => {
   const router = useRouter();
-  
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log("session =", session);
+      if (!session) {
+        router.replace("/");
+      }
+    };
+    checkSession();
+  }, [router]);
+
   const animRef = useRef(null);
   return (
 
@@ -93,6 +104,7 @@ const HomePage = () => {
                   <View key={card.id} style={styles.card}>
                     <View style={styles.cardDet}>
                       <Text style={styles.name}>{card.name},{card.age}</Text>
+
                       <Text style={styles.space}></Text>
                       <Text style = {styles.course}>{card.uni} • {card.course}</Text>
                       <Text style={styles.space}></Text>
