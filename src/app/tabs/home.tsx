@@ -56,7 +56,7 @@ const HomePage = () => {
       if (!session) router.replace("/");
       
       const { data: { user: {user_metadata} } } = await supabase.auth.getUser();
-      if (user_metadata.new_user) router.push('/profileSettings/completeRegistration');
+      if (user_metadata.new_user || !user_metadata.university) router.push('/profileSettings/completeRegistration');
 
     };
     checkSession();

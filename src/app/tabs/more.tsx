@@ -33,18 +33,45 @@ const more = () => {
       "Confirm Logout",
       "Are you sure you want to logout?",
       [
-        {
-          text: "Cancel",
-          // style: "cancel"
-        },
-        {
-          text: "Logout",
-          onPress: logout
-        }
-      ],
-      { cancelable: true }
+        { text: "Cancel" },
+        { text: "Logout", onPress: logout }
+      ]
     );
   };
+
+  const deleteAccount = () => {
+    Alert.alert(
+      "Delete Account",
+      "This action is IRREVERSIBLE!\nAre you sure you want to proceed?",
+      [
+        {
+          text: "CONFIRM DELETE!", onPress: async () => {
+            Alert.prompt(
+              "Are you sure you want to leave Unibuds? :(",
+              "Enter your password to proceed with deletion",
+              [{ text: 'Cancel' },
+              {
+                text: 'Submit', onPress: async password => {
+                  const { data, error } = await supabase.auth.signInWithPassword({
+                    email: userData.email,
+                    password: password,
+                  })
+                  if (error) Alert.alert("Incorrect password", userData.email);
+                  else {
+                    const { data, error } = await supabase.rpc('deleteUser', userData.sub)
+                    if (error) console.warn(error);
+                    else router.push('/');
+                  }
+                }
+              },
+              ],
+              'secure-text'
+            )
+          }
+        }, { text: "Cancel" }
+      ]
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -111,7 +138,7 @@ const more = () => {
 
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => router.push('settings/deleteAcc')}
+              onPress={deleteAccount}
               style={styles.setbox}>
               <MaterialIcons name="delete" size={24} color="white" />
               <Text style={styles.setting}>Delete Account</Text>

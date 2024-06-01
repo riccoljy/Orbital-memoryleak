@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, Appearance, ScrollView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Button, Appearance, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useRouter } from "expo-router";
@@ -48,7 +48,8 @@ const CompleteRegistration = () => {
                 new_user: false,
             },
         })
-        console.log(`data=${data}, \nerror=${error}`)
+        if (!error && router.canGoBack()) router.back();
+        else console.log(`data=${data}, \nerror=${error}`)
     };
 
     const universities = [
@@ -68,7 +69,11 @@ const CompleteRegistration = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        {/* <SafeAreaView style={styles.container}> */}
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps='handled' style={styles.container}
             >
@@ -145,7 +150,8 @@ const CompleteRegistration = () => {
                     <Button title="Submit" onPress={handleSubmit} />
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        {/* </SafeAreaView> */}
+        </KeyboardAvoidingView>
     );
 };
 
@@ -156,6 +162,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Appearance.getColorScheme() === 'dark' ? '#161622' : '#e7e7e8',
         padding: 16,
+        paddingTop: 40
     },
     label: {
         fontSize: 16,
