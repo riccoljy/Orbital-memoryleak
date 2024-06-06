@@ -12,9 +12,10 @@ const Registration = () => {
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const router = useRouter();
+
   async function handleRegister() {
 
-    if (!password || !password2) {
+    if (password !== password2) {
       Alert.alert("Error", "Passwords don't match");
       return;
     }
@@ -38,6 +39,7 @@ const Registration = () => {
       Alert.alert("Please check your inbox for verification");
       router.back();
     }
+    
     else Alert.alert(error.message)
 
   };

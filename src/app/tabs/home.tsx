@@ -51,12 +51,22 @@ const HomePage = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log("session1 =", session);
-      if (!session) router.replace("/");
-      
-      const { data: { user: {user_metadata} } } = await supabase.auth.getUser();
-      if (user_metadata.new_user || !user_metadata.university) router.push('/profileSettings/completeRegistration');
+
+      {
+        const { data, error } = await supabase.auth.refreshSession()
+        const { session, user } = data
+        console.log("session1 =", session);
+        if (!session) router.replace("/");
+      }
+
+      const { data: { user }, error } = await supabase.auth.getUser();
+      console.log("error=", error)
+      let user_metadata;
+      if (user) {
+        user_metadata = user.user_metadata
+        console.log('user metadata = ', user_metadata)
+      }
+      if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
     };
     checkSession();

@@ -33,5 +33,5 @@ To configure Supabase:
 3. Store your project's Supabase URL and API key in an `.env` file in the root directory like this:
 ```
 EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-EXPO_PUBLIC_SUPABASE_KEY=your_public_api_key
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your_public_api_key
 ```
