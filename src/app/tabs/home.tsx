@@ -55,6 +55,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const checkSession = async () => {
+
       {
         const { data, error } = await supabase.auth.refreshSession()
         const { session, user } = data
@@ -62,14 +63,16 @@ const HomePage = () => {
         if (!session) router.replace("/");
       }
 
-      const { data: userData, error } = await supabase
+      const { data: allData, error:other } = await supabase
        .rpc('get_user_metadata')
+      setUserData(allData);
+
+      const { data: { user }, error } = await supabase.auth.getUser();
       console.log("error=", error)
-      const user_metadata = userData;
-      if (userData) {
-        
-        setUserData(userData);
-        console.log('user metadata = ', user_metadata);
+      let user_metadata;
+      if (user) {
+        user_metadata = user.user_metadata
+        console.log('user metadata = ', user_metadata)
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
