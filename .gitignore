@@ -10,6 +10,6 @@ npm-debug.*
 *.orig.*
 web-build/
 *.env
-#DONT PUT IN RICCO'S ENV
+/%ProgramData%/
 .DS_Store
 expo-env.d.ts

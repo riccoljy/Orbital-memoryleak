@@ -60,7 +60,7 @@ const more = () => {
                   else {
                     const { data, error } = await supabase.rpc('deleteUser', userData.sub)
                     if (error) console.warn(error);
-                    else router.push('/');
+                    else router.replace('/');
                   }
                 }
               },
