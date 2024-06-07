@@ -5,8 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from "expo-router";
 import { AntDesign, Ionicons, Entypo, MaterialIcons } from '@expo/vector-icons';
 import { supabase } from "@/src/supabase/supabase.js";
-
-
+import alert from '@/alert';
 
 
 const more = () => {

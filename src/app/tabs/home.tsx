@@ -58,15 +58,21 @@ const HomePage = () => {
         console.log("session1 =", session);
         if (!session) router.replace("/");
       }
-
-      const { data: { user }, error } = await supabase.auth.getUser();
-      console.log("error=", error)
-      let user_metadata;
-      if (user) {
-        user_metadata = user.user_metadata
-        console.log('user metadata = ', user_metadata)
+      {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        console.log("error=", error)
+        let user_metadata;
+        if (user) {
+          user_metadata = user.user_metadata
+          console.log('user metadata = ', user_metadata)
+        }
+        if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
       }
-      if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
+
+      let { data, error } = await supabase
+        .rpc('get_user_metadata')
+      if (error) console.error(error)
+      else console.log(data)
 
     };
     checkSession();

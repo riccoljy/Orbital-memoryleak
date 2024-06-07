@@ -4,9 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Ionicons,FontAwesome6 } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { supabase } from "@/src/supabase/supabase.js";
 
 
 const chat = () => {
+  
     const navigation = useNavigation();
     const [messages,sendMessage] = useState([]);
     const [input,setInput] = useState("");
