@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef,useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -46,12 +46,15 @@ const sampleData = [
 ];
 
 
+
+
+
 const HomePage = () => {
   const router = useRouter();
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const checkSession = async () => {
-
       {
         const { data, error } = await supabase.auth.refreshSession()
         const { session, user } = data
@@ -59,12 +62,14 @@ const HomePage = () => {
         if (!session) router.replace("/");
       }
 
-      const { data: { user }, error } = await supabase.auth.getUser();
+      const { data: userData, error } = await supabase
+       .rpc('get_user_metadata')
       console.log("error=", error)
-      let user_metadata;
-      if (user) {
-        user_metadata = user.user_metadata
-        console.log('user metadata = ', user_metadata)
+      const user_metadata = userData;
+      if (userData) {
+        
+        setUserData(userData);
+        console.log('user metadata = ', user_metadata);
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
@@ -74,7 +79,12 @@ const HomePage = () => {
 
   const animRef = useRef(null);
 
+  const left = (cardIdx) => {
 
+  }
+  const right = (cardIdx) => {
+    
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,21 +118,27 @@ const HomePage = () => {
 
           <Swiper
             ref={animRef}
-            cards={sampleData}
+            cards={userData ? userData:[]}
             containerStyle={{ backgroundColor: 'transparent' }}
             cardIndex={0}
             animateCardOpacity
             stackSize={4}
             verticalSwipe={false}
+            onSwipedLeft={(cardIdx) => {
+              left(cardIdx)
+            }}
+            onSwipedRight={(cardIdx) => {
+              right(cardIdx)
+            }}
             renderCard={(card) => {
               if (card) {
                 return (
-                  <View key={card.id} style={styles.card}>
+                  <View key={card.sub} style={styles.card}>
                     <View style={styles.cardDet}>
-                      <Text style={styles.name}>{card.name},{card.age}</Text>
+                      <Text style={styles.name}>{card.first_name} {card.last_name}</Text>
 
                       <Text style={styles.space}></Text>
-                      <Text style={styles.course}>{card.uni} • {card.course}</Text>
+                      <Text style={styles.course}>{card.university} • {card.course}</Text>
                       <Text style={styles.space}></Text>
                       <Text style={styles.bio}>{card.bio}</Text>
 
