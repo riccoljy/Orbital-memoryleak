@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
+
 import Swiper from "react-native-deck-swiper";
 
 const sampleData = [
@@ -52,6 +53,8 @@ const sampleData = [
 const HomePage = () => {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
+  const [swip, setSwiper] = useState(null);
+  const [swipName, setSwiperName] = useState(null);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -63,16 +66,17 @@ const HomePage = () => {
         if (!session) router.replace("/");
       }
 
-      const { data: allData, error:other } = await supabase
-       .rpc('get_user_metadata')
-      setUserData(allData);
-
       const { data: { user }, error } = await supabase.auth.getUser();
       console.log("error=", error)
+      setSwiper(user?.id);
+      setSwiperName(user?.user_metadata.first_name);
       let user_metadata;
       if (user) {
         user_metadata = user.user_metadata
         console.log('user metadata = ', user_metadata)
+        const { data: allData, error } = await supabase
+       .rpc('get_user_metadata',{useid:swip})
+        setUserData(allData);
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
@@ -82,11 +86,43 @@ const HomePage = () => {
 
   const animRef = useRef(null);
 
-  const left = (cardIdx) => {
+  const left = async (idx) => {
+    if (!userData[idx]) return;   
+    const { data, error } = await supabase      
+      .from('passes') 
+      .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
+    console.log('swipeleft: ',swipName);
 
-  }
-  const right = (cardIdx) => {
+
     
+  }
+
+  const right = async (idx) => {   
+    if (!userData[idx]) return;
+    const { data, error } = await supabase  
+      .from('likes')
+      .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
+    console.log('swiperight: ',swipName);
+
+    const { data:matches, error:matchError } = await supabase 
+      .from("likes")
+      .select('*')
+      .eq("swiper_id",userData[idx].id) 
+      .eq("swiped_id",swip)
+      .single();
+
+    if(matches) {
+      console.log('hi')
+      const { data, error } = await supabase  
+        .from('matches')
+        .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
+        router.push({pathname:'services/match',params:{
+          swipername:swipName, 
+          swipedname:userData[idx].first_name,
+        },})
+        
+      
+    }
   }
 
   return (
@@ -112,8 +148,7 @@ const HomePage = () => {
             <AntDesign name="right" size={24} color="#D3D3D3" />
 
           </TouchableOpacity>
-
-          <Text style={styles.title}>DISCOVER</Text>
+         
 
         </View>
 
@@ -127,11 +162,11 @@ const HomePage = () => {
             animateCardOpacity
             stackSize={4}
             verticalSwipe={false}
-            onSwipedLeft={(cardIdx) => {
-              left(cardIdx)
+            onSwipedLeft={(cardIndex) => {
+              left(cardIndex)
             }}
-            onSwipedRight={(cardIdx) => {
-              right(cardIdx)
+            onSwipedRight={(cardIndex) => {
+              right(cardIndex)
             }}
             renderCard={(card) => {
               if (card) {
