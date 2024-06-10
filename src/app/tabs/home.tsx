@@ -50,6 +50,7 @@ const sampleData = [
 
 
 
+
 const HomePage = () => {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
@@ -57,32 +58,48 @@ const HomePage = () => {
   const [swipName, setSwiperName] = useState(null);
 
   useEffect(() => {
+    console.log('hi')
     const checkSession = async () => {
 
       {
         const { data, error } = await supabase.auth.refreshSession()
         const { session, user } = data
         console.log("session1 =", session);
-        if (!session) router.replace("/");
+        if (!session) router.replace("/"); 
       }
 
       const { data: { user }, error } = await supabase.auth.getUser();
       console.log("error=", error)
       setSwiper(user?.id);
-      setSwiperName(user?.user_metadata.first_name);
+      setSwiperName(user?.user_metadata.first_name); 
       let user_metadata;
       if (user) {
         user_metadata = user.user_metadata
         console.log('user metadata = ', user_metadata)
-        const { data: allData, error } = await supabase
+        const { data: allData, error } = await supabase 
        .rpc('get_user_metadata',{useid:swip})
-        setUserData(allData);
+
+       const { data: user_passes, error:nil } = await supabase 
+        .from('passes') 
+        .select('swiped_id')
+        .eq('swiper_id',swip) 
+        const final_passes = user_passes.map(val => val.swiped_id)  
+        console.log('user passes ',final_passes)
+      
+        const { data: user_likes, error:n } = await supabase 
+        .from('likes') 
+        .select('swiped_id')
+        .eq('swiper_id',swip) 
+        const final_likes = user_likes.map(val => val.swiped_id) 
+  
+       const filtered = allData.filter((u)=>swip!=u.id &&!final_passes?.includes(u.id) &&!final_likes?.includes(u.id))
+        setUserData(filtered);  
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
-    };
+    };   
     checkSession();
-  }, [router]);
+  }, [router,swip]);
 
   const animRef = useRef(null);
 
@@ -93,8 +110,6 @@ const HomePage = () => {
       .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
     console.log('swipeleft: ',swipName);
 
-
-    
   }
 
   const right = async (idx) => {   
@@ -105,13 +120,13 @@ const HomePage = () => {
     console.log('swiperight: ',swipName);
 
     const { data:matches, error:matchError } = await supabase 
-      .from("likes")
-      .select('*')
+      .from("likes") 
+      .select('*') 
       .eq("swiper_id",userData[idx].id) 
       .eq("swiped_id",swip)
-      .single();
-
-    if(matches) {
+      .single(); 
+ 
+    if(matches) { 
       console.log('hi')
       const { data, error } = await supabase  
         .from('matches')
@@ -160,7 +175,7 @@ const HomePage = () => {
             containerStyle={{ backgroundColor: 'transparent' }}
             cardIndex={0}
             animateCardOpacity
-            stackSize={4}
+            stackSize={3 }
             verticalSwipe={false}
             onSwipedLeft={(cardIndex) => {
               left(cardIndex)
