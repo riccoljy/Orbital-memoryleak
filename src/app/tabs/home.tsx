@@ -2,11 +2,10 @@ import React, { useEffect, useRef,useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from "expo-router";
-import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
+import { useRouter,useLocalSearchParams } from "expo-router";
+import { AntDesign, FontAwesome5,Ionicons } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
-
 import Swiper from "react-native-deck-swiper";
 
 const sampleData = [
@@ -56,16 +55,19 @@ const HomePage = () => {
   const [userData, setUserData] = useState(null);
   const [swip, setSwiper] = useState(null);
   const [swipName, setSwiperName] = useState(null);
+  const {Course='',Module='',University=''} = useLocalSearchParams(); 
+  console.log('course:',Course);
+  console.log('Module:',Module);
+
 
   useEffect(() => {
-    console.log('hi')
     const checkSession = async () => {
 
       {
         const { data, error } = await supabase.auth.refreshSession()
         const { session, user } = data
         console.log("session1 =", session);
-        if (!session) router.replace("/"); 
+        if (!session) router.replace("/");  
       }
 
       const { data: { user }, error } = await supabase.auth.getUser();
@@ -93,7 +95,23 @@ const HomePage = () => {
         const final_likes = user_likes.map(val => val.swiped_id) 
   
        const filtered = allData.filter((u)=>swip!=u.id &&!final_passes?.includes(u.id) &&!final_likes?.includes(u.id))
+       console.log('filtered',filtered);
+       let filtered2;
+       if (Course||Module||University) {
+        filtered2 = filtered.filter((u)=>(u.course.toString().toLowerCase() 
+          == Course.toString().toLowerCase()||Course=='')&&
+          (u.bio.toString().includes(Module.toString().toUpperCase())||Module=='')&&
+          (u.university.toString().toLowerCase() 
+          == University.toString().toLowerCase()||University==''))
+       }
+       if (filtered2) {
+        setUserData(filtered2)
+       }
+       else {
         setUserData(filtered);  
+       }
+
+        
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
@@ -148,10 +166,10 @@ const HomePage = () => {
 
 
           <TouchableOpacity
-            onPress={() => router.push('services/meetStudents')}
+            onPress={() => router.push('services/interestGroups')}
             style={styles.input}>
             <FontAwesome5 name="user-friends" size={24} color="#D3D3D3" />
-            <Text style={styles.service1}>Filter Students</Text>
+            <Text style={styles.service1}>Interest Groups</Text>
             <AntDesign name="right" size={24} color="#D3D3D3" />
           </TouchableOpacity>
 
@@ -166,6 +184,15 @@ const HomePage = () => {
          
 
         </View>
+
+        <View style={styles.title}>
+          <Text style={styles.title}>DISCOVER</Text>
+          <TouchableOpacity style={{paddingTop:18,paddingLeft:100}} 
+            onPress={() => router.push('services/filter')}>
+            <Ionicons name="filter-circle-sharp" size={40} color="#D3D3D3" />
+          </TouchableOpacity>
+        </View>
+        
 
         <View>
 
@@ -249,7 +276,8 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     paddingTop: 20,
     paddingHorizontal: 20,
-    color: '#D3D3D3'
+    color: '#D3D3D3',
+    flexDirection:'row'
   },
   space: {
     margin: 5

@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     padding:10,
     borderRadius:20,
-    backgroundColor:'white',
+    backgroundColor:'#003153',
     
   },
   textInput: {
