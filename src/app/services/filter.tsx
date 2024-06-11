@@ -21,9 +21,18 @@ const filter = () => {
           <Ionicons name="chevron-back" size={30} color="white" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Filter Options</Text>
+        <TouchableOpacity style={styles.button2} 
+            onPress={() => router.push({pathname:'tabs/home',params:{
+                  Course:'',
+                  Module:'',
+                  University:'',
+                },})} >
+            <Text style={{fontSize: 18,fontWeight:'600'}}>Clear Filters</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={{marginHorizontal:20}}>
+          
         <Text style={styles.label}>Course</Text>
             <TextInput
               style={styles.input}
@@ -110,5 +119,15 @@ button: {
     padding:10,
     borderRadius:20,
     backgroundColor:'#D3D3D3',
+},
+button2: {
+  marginLeft:40,
+  paddingVertical:10,
+  flexDirection:'row',
+  alignItems:'center',
+  justifyContent:'center',
+  padding:10,
+  borderRadius:20,
+  backgroundColor:'#D3D3D3',
 }
 })
