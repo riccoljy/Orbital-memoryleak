@@ -123,7 +123,7 @@ const HomePage = () => {
 
   const left = async (idx) => {
     if (!userData[idx]) return;   
-    const { data, error } = await supabase      
+    const { data, error } = await supabase        
       .from('passes') 
       .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
     console.log('swipeleft: ',swipName);
@@ -166,7 +166,7 @@ const HomePage = () => {
 
 
           <TouchableOpacity
-            onPress={() => router.push('services/interestGroups')}
+            onPress={() => router.push('services/groups/interestGroups')}
             style={styles.input}>
             <FontAwesome5 name="user-friends" size={24} color="#D3D3D3" />
             <Text style={styles.service1}>Interest Groups</Text>
