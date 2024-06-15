@@ -121,7 +121,7 @@ const more = () => {
               onPress={() => router.push('settings/terms')}
               style={styles.setbox}>
               <Ionicons name="information-circle-sharp" size={30} color="white" />
-              <Text style={styles.setting}>Terms & Policies</Text>
+              <Text style={styles.setting2}>Terms & Policies</Text>
 
             </TouchableOpacity>
 
@@ -190,6 +190,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: 'white',
     paddingLeft: 20
+  },
+  setting2: {
+    fontSize: 17,
+    color: 'white',
+    paddingLeft: 16
   },
   editPro: {
     flexDirection: 'row',
