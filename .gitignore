@@ -13,3 +13,4 @@ web-build/
 /%ProgramData%/
 .DS_Store
 expo-env.d.ts
+.vscode

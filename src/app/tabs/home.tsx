@@ -1,9 +1,9 @@
-import React, { useEffect, useRef,useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter,useLocalSearchParams } from "expo-router";
-import { AntDesign, FontAwesome5,Ionicons } from '@expo/vector-icons';
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
@@ -55,9 +55,9 @@ const HomePage = () => {
   const [userData, setUserData] = useState(null);
   const [swip, setSwiper] = useState(null);
   const [swipName, setSwiperName] = useState(null);
-  const {Course='',Module='',University=''} = useLocalSearchParams(); 
-  console.log('course:',Course);
-  console.log('Module:',Module);
+  const { Course = '', Module = '', University = '' } = useLocalSearchParams();
+  console.log('course:', Course);
+  console.log('Module:', Module);
 
 
   useEffect(() => {
@@ -67,94 +67,96 @@ const HomePage = () => {
         const { data, error } = await supabase.auth.refreshSession()
         const { session, user } = data
         console.log("session1 =", session);
-        if (!session) router.replace("/");  
+        if (!session) router.replace("/");
       }
 
       const { data: { user }, error } = await supabase.auth.getUser();
       console.log("error=", error)
       setSwiper(user?.id);
-      setSwiperName(user?.user_metadata.first_name); 
+      setSwiperName(user?.user_metadata.first_name);
       let user_metadata;
       if (user) {
         user_metadata = user.user_metadata
         console.log('user metadata = ', user_metadata)
-        const { data: allData, error } = await supabase 
-       .rpc('get_user_metadata',{useid:swip})
+        const { data: allData, error } = await supabase
+          .rpc('get_user_metadata', { useid: swip })
 
-       const { data: user_passes, error:nil } = await supabase 
-        .from('passes') 
-        .select('swiped_id')
-        .eq('swiper_id',swip) 
-        const final_passes = user_passes.map(val => val.swiped_id)  
-        console.log('user passes ',final_passes)
-      
-        const { data: user_likes, error:n } = await supabase 
-        .from('likes') 
-        .select('swiped_id')
-        .eq('swiper_id',swip) 
-        const final_likes = user_likes.map(val => val.swiped_id) 
-  
-       const filtered = allData.filter((u)=>swip!=u.id &&!final_passes?.includes(u.id) &&!final_likes?.includes(u.id))
-       console.log('filtered',filtered);
-       let filtered2;
-       if (Course||Module||University) {
-        filtered2 = filtered.filter((u)=>(u.course.toString().toLowerCase() 
-          == Course.toString().toLowerCase()||Course=='')&&
-          (u.bio.toString().includes(Module.toString().toUpperCase())||Module=='')&&
-          (u.university.toString().toLowerCase() 
-          == University.toString().toLowerCase()||University==''))
-       }
-       if (filtered2) {
-        setUserData(filtered2)
-       }
-       else {
-        setUserData(filtered);  
-       }
+        const { data: user_passes, error: nil } = await supabase
+          .from('passes')
+          .select('swiped_id')
+          .eq('swiper_id', swip)
+        const final_passes = user_passes.map(val => val.swiped_id)
+        console.log('user passes ', final_passes)
 
-        
+        const { data: user_likes, error: n } = await supabase
+          .from('likes')
+          .select('swiped_id')
+          .eq('swiper_id', swip)
+        const final_likes = user_likes.map(val => val.swiped_id)
+
+        const filtered = allData.filter((u) => swip != u.id && !final_passes?.includes(u.id) && !final_likes?.includes(u.id))
+        console.log('filtered', filtered);
+        let filtered2;
+        if (Course || Module || University) {
+          filtered2 = filtered.filter((u) => (u.course.toString().toLowerCase()
+            == Course.toString().toLowerCase() || Course == '') &&
+            (u.bio.toString().includes(Module.toString().toUpperCase()) || Module == '') &&
+            (u.university.toString().toLowerCase()
+              == University.toString().toLowerCase() || University == ''))
+        }
+        if (filtered2) {
+          setUserData(filtered2)
+        }
+        else {
+          setUserData(filtered);
+        }
+
+
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
-    };   
+    };
     checkSession();
-  }, [router,swip]);
+  }, [router, swip]);
 
   const animRef = useRef(null);
 
   const left = async (idx) => {
-    if (!userData[idx]) return;   
-    const { data, error } = await supabase        
-      .from('passes') 
-      .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
-    console.log('swipeleft: ',swipName);
+    if (!userData[idx]) return;
+    const { data, error } = await supabase
+      .from('passes')
+      .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
+    console.log('swipeleft: ', swipName);
 
   }
 
-  const right = async (idx) => {   
+  const right = async (idx) => {
     if (!userData[idx]) return;
-    const { data, error } = await supabase  
+    const { data, error } = await supabase
       .from('likes')
-      .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
-    console.log('swiperight: ',swipName);
+      .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
+    console.log('swiperight: ', swipName);
 
-    const { data:matches, error:matchError } = await supabase 
-      .from("likes") 
-      .select('*') 
-      .eq("swiper_id",userData[idx].id) 
-      .eq("swiped_id",swip)
-      .single(); 
- 
-    if(matches) { 
+    const { data: matches, error: matchError } = await supabase
+      .from("likes")
+      .select('*')
+      .eq("swiper_id", userData[idx].id)
+      .eq("swiped_id", swip)
+      .single();
+
+    if (matches) {
       console.log('hi')
-      const { data, error } = await supabase  
+      const { data, error } = await supabase
         .from('matches')
-        .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
-        router.push({pathname:'services/match',params:{
-          swipername:swipName, 
-          swipedname:userData[idx].first_name,
-        },})
-        
-      
+        .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
+      router.push({
+        pathname: 'services/match', params: {
+          swipername: swipName,
+          swipedname: userData[idx].first_name,
+        },
+      })
+
+
     }
   }
 
@@ -181,28 +183,28 @@ const HomePage = () => {
             <AntDesign name="right" size={24} color="#D3D3D3" />
 
           </TouchableOpacity>
-         
+
 
         </View>
 
         <View style={styles.title}>
           <Text style={styles.title}>DISCOVER</Text>
-          <TouchableOpacity style={{paddingTop:18,paddingLeft:100}} 
+          <TouchableOpacity style={{ paddingTop: 18, paddingLeft: 100 }}
             onPress={() => router.push('services/filter')}>
             <Ionicons name="filter-circle-sharp" size={40} color="#D3D3D3" />
           </TouchableOpacity>
         </View>
-        
+
 
         <View>
 
           <Swiper
             ref={animRef}
-            cards={userData ? userData:[]}
+            cards={userData ? userData : []}
             containerStyle={{ backgroundColor: 'transparent' }}
             cardIndex={0}
             animateCardOpacity
-            stackSize={3 }
+            stackSize={3}
             verticalSwipe={false}
             onSwipedLeft={(cardIndex) => {
               left(cardIndex)
@@ -277,7 +279,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingHorizontal: 20,
     color: '#D3D3D3',
-    flexDirection:'row'
+    flexDirection: 'row'
   },
   space: {
     margin: 5
