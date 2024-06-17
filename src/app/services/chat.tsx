@@ -1,84 +1,126 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View,TextInput,Button,Keyboard,Platform } from 'react-native'
-import React, { useState } from 'react'
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, TextInput, Button, Keyboard, Platform } from 'react-native'
+import { GiftedChat } from 'react-native-gifted-chat';
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { Ionicons,FontAwesome6 } from '@expo/vector-icons';
+import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { supabase } from "@/src/supabase/supabase.js";
 
 
 const chat = () => {
-  
-    const navigation = useNavigation();
-    const [messages,sendMessage] = useState([]);
-    const [input,setInput] = useState("");
-    const {age,name,chat} = useLocalSearchParams();
 
-    return (
-        <SafeAreaView style = {styles.container}>
-            <View style={styles.header}> 
-                <TouchableOpacity onPress={()=>navigation.goBack()}> 
-                <Ionicons name="chevron-back" size={30} color="white"/>
-                </TouchableOpacity>
-                <FontAwesome6 name="circle-user" size={30} color="white" style={{marginLeft:10}}/>
-                <View style={{flexDirection:'column',marginLeft:5}}>
-                  <Text style={styles.headerText}>{name}, {age} </Text>                  
-                </View>
-            </View>
+  const navigation = useNavigation();
+  const [messages, sendMessage] = useState([]);
+  const [input, setInput] = useState("");
+  const [userData, setUserData] = useState(null);
+  const { chatid, userid } = useLocalSearchParams();
 
-            <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}
-                style={{bottom:-540}}
-                keyboardVerticalOffset={10}>
-  
-                <View style={styles.inputBox}>
-                    <TextInput style={styles.input}
-                        placeholder='Type Message...'
-                        onChangeText={setInput}
-                        value={input}/>
-                    <Button title="Send"/>
-                </View>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
-    )
+  useEffect(() => {
+    const fetchUserAndMessages = async () => {
+      // Fetch user ID
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        console.error(userError);
+        return;
+      }
+
+      setUserData(user);
+      console.log("user=", user)
+
+      // Fetch chats
+      const { data: messages, error: err } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('chat_id', chatid)
+
+      if (err) console.error(err);
+      else sendMessage(messages);
+    };
+    fetchUserAndMessages();
+  }, []);
+
+  useEffect(() => {
+
+    if (userData) console.log("messages=", messages);
+  })
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={30} color="white" />
+        </TouchableOpacity>
+        <FontAwesome6 name="circle-user" size={30} color="white" style={{ marginLeft: 10 }} />
+        <View style={{ flexDirection: 'column', marginLeft: 5 }}>
+          <Text style={styles.headerText}>{chatid} </Text>
+        </View>
+      </View>
+
+      <View>
+        {!userData ?
+          (<Text> Loading...</Text>)
+          :
+          <GiftedChat
+            messages={messages}
+            user={{ _id: userData.id }}
+          >
+          </GiftedChat>
+        }
+      </View>
+
+      {/* <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}
+        style={{ bottom: -540 }}
+        keyboardVerticalOffset={10}>
+        <View style={styles.inputBox}>
+          <TextInput style={styles.input}
+            placeholder='Type Message...'
+            onChangeText={setInput}
+            value={input} />
+          <Button title="Send" />
+        </View>
+      </KeyboardAvoidingView> */}
+    </SafeAreaView>
+  )
 }
 
 export default chat
 
 const styles = StyleSheet.create({
-    container: {
-        flex:1,
-        backgroundColor:'#161622',
-      },
-      headerText: {
-        fontSize: 30,
-        color:'white',
-        marginLeft:5,
-        fontWeight:700
-      },
-      
-      header:{
-        marginTop:10,
-        flexDirection:'row',
-        backgroundColor:'#161622',
-        borderBottomColor:'grey',
-        borderBottomWidth:1,
-        alignItems:'center',
-        paddingBottom:15
-        
-      },
-      inputBox: {
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center',
-        borderTopWidth:1,
-        borderTopColor:'black',
-        backgroundColor:'beige',
-        paddingHorizontal:22,
-        paddingVertical:12
-      },
-      input: {
-        flex:1,
-        height:35,
-        fontSize:18
-      }
+  container: {
+    flex: 1,
+    // backgroundColor: '#161622',
+  },
+  headerText: {
+    fontSize: 30,
+    color: 'white',
+    marginLeft: 5,
+    fontWeight: 700
+  },
+
+  header: {
+    marginTop: 10,
+    flexDirection: 'row',
+    backgroundColor: '#161622',
+    borderBottomColor: 'grey',
+    borderBottomWidth: 1,
+    alignItems: 'center',
+    paddingBottom: 15
+
+  },
+  inputBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: 'black',
+    backgroundColor: 'beige',
+    paddingHorizontal: 22,
+    paddingVertical: 12
+  },
+  input: {
+    flex: 1,
+    height: 35,
+    fontSize: 18
+  }
 })

@@ -203,41 +203,42 @@ const userChatData = [
 ];
 
 
-
-
 const chatFriends = () => {
   const navigation = useNavigation();
   const router = useRouter();
   const [chats, setChats] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
 
 
   useEffect(() => {
     const fetchUserAndChats = async () => {
-        // Fetch user ID
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        if (userError || !user) {
-            console.error(userError);
-            return;
-        }
+      // Fetch user ID
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        console.error(userError);
+        return;
+      }
 
-        setUserData(user);
+      setUserData(user);
+      console.log("user=", user)
 
-        // Fetch chats
-        const { data: chatData, error: chatError } = await supabase
-            .from('chats')
-            .select('*')
-            .contains('participant_ids', [user.id]);
+      // Fetch chats
+      const { data: chatData, error: chatError } = await supabase
+        .from('chats')
+        .select('*')
+        .contains('participant_ids', [user.id]);
 
-        if (chatError) {
-            console.error(chatError);
-        } else {
-            setChats(chatData);
-            console.log("Chat data=", user, chatData)
-        }
+      if (chatError) console.error(chatError);
+      else setChats(chatData);
     };
     fetchUserAndChats();
-}, []);
+  }, []);
+
+  useEffect(() => {
+    if (chats[0]) console.log("Updated chats state:", chats);
+  }, [chats]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -249,7 +250,7 @@ const chatFriends = () => {
         <Text style={styles.headerText}>Chats</Text>
       </View>
 
-      {/*search */}
+      {/* search */}
       <View style={styles.searchBox}>
         <TextInput
           placeholder='Search'
@@ -259,11 +260,32 @@ const chatFriends = () => {
         <TouchableOpacity style={{ marginRight: 8, marginBottom: 10, }}>
           <Entypo name="magnifying-glass" size={24} color="black" />
         </TouchableOpacity>
+      </View>
 
+      <View style={styles.container}>
+        {chats.length === 0 ? (
+          <Text style={styles.emptyStateText}>No chats available</Text>
+        ) : (
+          <FlatList
+            data={chats}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.chatItem}
+                onPress={() => router.push({
+                  pathname: 'services/chat', params: { chatid: item.id}
+                })}>
+                <Text>Chat ID: {item.id}</Text>
+                <Text>Chat name: {item.chat_name}</Text>
+                <Text>Participants: {item.participant_ids.join(', ')}</Text>
+                <Text>Created At: {new Date(item.created_at).toLocaleString()}</Text>
+                <Text>Last Chatted at: {item.latest_message_timestamp}</Text>
+              </TouchableOpacity>
+            )} />
+        )}
       </View>
 
       {/* chatview */}
-      <View style={{ paddingHorizontal: 20 }}>
+      {/* <View style={{ paddingHorizontal: 20 }}>
         <FlatList
           data={userChatData}
           keyExtractor={(val) => val.id.toString()}
@@ -293,7 +315,7 @@ const chatFriends = () => {
             </TouchableOpacity>
           )}
         />
-      </View>
+      </View> */}
 
     </SafeAreaView>
   )
@@ -304,7 +326,7 @@ export default chatFriends
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#161622',
+    // backgroundColor: '#161622',
   },
   headerText: {
     fontSize: 30,
@@ -349,5 +371,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     paddingLeft: 5,
 
-  }
+  },
+  emptyStateText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 18,
+    color: '#888',
+  },
+  chatItem: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
 })
