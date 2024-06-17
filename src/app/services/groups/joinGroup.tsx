@@ -61,7 +61,7 @@ const joinGroup = () => {
                 if (grpId) {
                     const { data:name2, error } = await supabase 
                         .from('join_group') 
-                        .select('name')
+                        .select('id, name')
                         .eq('group_id',grpId);
                     console.log(name2)
                     setNameData(name2)
@@ -93,7 +93,7 @@ const joinGroup = () => {
                     <View>
                         <FlatList
                             data={nameData}
-                            keyExtractor={(val) => val.toString()}
+                            keyExtractor={(val) => val.id}
                             renderItem={({item}) => (
                             
                                 <View style={{flexDirection:'column',marginLeft:20}}>
