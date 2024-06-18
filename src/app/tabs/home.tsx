@@ -55,12 +55,44 @@ const HomePage = () => {
   const [userData, setUserData] = useState(null);
   const [swip, setSwiper] = useState(null);
   const [swipName, setSwiperName] = useState(null);
-  const { Course = '', Module = '', University = '' } = useLocalSearchParams();
-  console.log('course:', Course);
-  console.log('Module:', Module);
+  const {Course='',Module='',University=''} = useLocalSearchParams(); 
 
 
   useEffect(() => {
+    const swiper = async () => {
+      const { data: allData, error } = await supabase 
+       .rpc('get_user_metadata',{useid:swip})
+
+       const { data: user_passes, error:nil } = await supabase 
+        .from('passes') 
+        .select('swiped_id')
+        .eq('swiper_id',swip) 
+        const final_passes = user_passes.map(val => val.swiped_id)  
+      
+        const { data: user_likes, error:n } = await supabase 
+        .from('likes') 
+        .select('swiped_id')
+        .eq('swiper_id',swip) 
+        const final_likes = user_likes.map(val => val.swiped_id) 
+      if (allData) {
+        const filtered = allData.filter((u: { id: any; })=>!final_passes?.includes(u.id) &&!final_likes?.includes(u.id))
+        let filtered2;
+        if (Course||Module||University) {
+         filtered2 = filtered.filter((u)=>(u.course.toString().toLowerCase() 
+           == Course.toString().toLowerCase()||Course=='')&&
+           (u.bio.toString().includes(Module.toString().toUpperCase())||Module=='')&&
+           (u.university.toString().toLowerCase() 
+           == University.toString().toLowerCase()||University==''))
+        }
+        if (filtered2) {
+         setUserData(filtered2)
+        }
+        else {
+         setUserData(filtered);  
+        }
+      }
+      
+    }
     const checkSession = async () => {
 
       {
@@ -78,38 +110,8 @@ const HomePage = () => {
       if (user) {
         user_metadata = user.user_metadata
         console.log('user metadata = ', user_metadata)
-        const { data: allData, error } = await supabase
-          .rpc('get_user_metadata', { useid: swip })
-
-        const { data: user_passes, error: nil } = await supabase
-          .from('passes')
-          .select('swiped_id')
-          .eq('swiper_id', swip)
-        const final_passes = user_passes.map(val => val.swiped_id)
-        console.log('user passes ', final_passes)
-
-        const { data: user_likes, error: n } = await supabase
-          .from('likes')
-          .select('swiped_id')
-          .eq('swiper_id', swip)
-        const final_likes = user_likes.map(val => val.swiped_id)
-
-        const filtered = allData.filter((u) => swip != u.id && !final_passes?.includes(u.id) && !final_likes?.includes(u.id))
-        console.log('filtered', filtered);
-        let filtered2;
-        if (Course || Module || University) {
-          filtered2 = filtered.filter((u) => (u.course.toString().toLowerCase()
-            == Course.toString().toLowerCase() || Course == '') &&
-            (u.bio.toString().includes(Module.toString().toUpperCase()) || Module == '') &&
-            (u.university.toString().toLowerCase()
-              == University.toString().toLowerCase() || University == ''))
-        }
-        if (filtered2) {
-          setUserData(filtered2)
-        }
-        else {
-          setUserData(filtered);
-        }
+        swiper();
+        
 
 
       }
@@ -137,16 +139,15 @@ const HomePage = () => {
       .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
     console.log('swiperight: ', swipName);
 
-    const { data: matches, error: matchError } = await supabase
-      .from("likes")
-      .select('*')
-      .eq("swiper_id", userData[idx].id)
-      .eq("swiped_id", swip)
-      .single();
-
-    if (matches) {
-      console.log('hi')
-      const { data, error } = await supabase
+    const { data:matches, error:matchError } = await supabase 
+      .from("likes") 
+      .select('*') 
+      .eq("swiper_id",userData[idx].id) 
+      .eq("swiped_id",swip)
+      .single(); 
+ 
+    if(matches) { 
+      const { data, error } = await supabase  
         .from('matches')
         .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
       router.push({
