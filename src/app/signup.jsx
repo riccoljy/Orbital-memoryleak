@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    color: Appearance.getColorScheme() === 'dark' ? '#fff' : '#000',
     height: 40,
     width: '50%',
     borderColor: 'gray',

@@ -1,9 +1,9 @@
-import React, { useEffect, useRef,useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter,useLocalSearchParams } from "expo-router";
-import { AntDesign, FontAwesome5,Ionicons } from '@expo/vector-icons';
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
@@ -99,13 +99,13 @@ const HomePage = () => {
         const { data, error } = await supabase.auth.refreshSession()
         const { session, user } = data
         console.log("session1 =", session);
-        if (!session) router.replace("/");  
+        if (!session) router.replace("/");
       }
 
       const { data: { user }, error } = await supabase.auth.getUser();
       console.log("error=", error)
       setSwiper(user?.id);
-      setSwiperName(user?.user_metadata.first_name); 
+      setSwiperName(user?.user_metadata.first_name);
       let user_metadata;
       if (user) {
         user_metadata = user.user_metadata
@@ -113,31 +113,31 @@ const HomePage = () => {
         swiper();
         
 
-        
+
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
-    };   
+    };
     checkSession();
-  }, [router,swip]);
+  }, [router, swip]);
 
   const animRef = useRef(null);
 
   const left = async (idx) => {
-    if (!userData[idx]) return;   
-    const { data, error } = await supabase        
-      .from('passes') 
-      .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
-    console.log('swipeleft: ',swipName);
+    if (!userData[idx]) return;
+    const { data, error } = await supabase
+      .from('passes')
+      .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
+    console.log('swipeleft: ', swipName);
 
   }
 
-  const right = async (idx) => {   
+  const right = async (idx) => {
     if (!userData[idx]) return;
-    const { data, error } = await supabase  
+    const { data, error } = await supabase
       .from('likes')
-      .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
-    console.log('swiperight: ',swipName);
+      .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
+    console.log('swiperight: ', swipName);
 
     const { data:matches, error:matchError } = await supabase 
       .from("likes") 
@@ -149,13 +149,15 @@ const HomePage = () => {
     if(matches) { 
       const { data, error } = await supabase  
         .from('matches')
-        .insert([{swiper_id:swip,swiped_id:userData[idx].id,swiper_name:swipName}])
-        router.push({pathname:'services/match',params:{
-          swipername:swipName, 
-          swipedname:userData[idx].first_name,
-        },})
-        
-      
+        .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
+      router.push({
+        pathname: 'services/match', params: {
+          swipername: swipName,
+          swipedname: userData[idx].first_name,
+        },
+      })
+
+
     }
   }
 
@@ -182,28 +184,28 @@ const HomePage = () => {
             <AntDesign name="right" size={24} color="#D3D3D3" />
 
           </TouchableOpacity>
-         
+
 
         </View>
 
         <View style={styles.title}>
           <Text style={styles.title}>DISCOVER</Text>
-          <TouchableOpacity style={{paddingTop:18,paddingLeft:100}} 
+          <TouchableOpacity style={{ paddingTop: 18, paddingLeft: 100 }}
             onPress={() => router.push('services/filter')}>
             <Ionicons name="filter-circle-sharp" size={40} color="#D3D3D3" />
           </TouchableOpacity>
         </View>
-        
+
 
         <View>
 
           <Swiper
             ref={animRef}
-            cards={userData ? userData:[]}
+            cards={userData ? userData : []}
             containerStyle={{ backgroundColor: 'transparent' }}
             cardIndex={0}
             animateCardOpacity
-            stackSize={3 }
+            stackSize={3}
             verticalSwipe={false}
             onSwipedLeft={(cardIndex) => {
               left(cardIndex)
@@ -278,7 +280,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingHorizontal: 20,
     color: '#D3D3D3',
-    flexDirection:'row'
+    flexDirection: 'row'
   },
   space: {
     margin: 5
