@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     ".env"
-, "components/chat/chatList.js"  ]
+, "components/chat/chatList.js", "src/app/services/chat.jsx"  ]
 }
