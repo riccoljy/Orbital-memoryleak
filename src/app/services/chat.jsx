@@ -26,7 +26,6 @@ const chat = () => {
       }
 
       setUserData(user);
-      console.log("user=", user)
 
       // Fetch chats
       const { data: messages, error: err } = await supabase
@@ -38,7 +37,6 @@ const chat = () => {
       let renderedMsgs = [];
       for (const message of messages) {
         const { id, chat_id, content, created_at, sender_id } = message;
-        console.log("message=",message);
         if (!content) continue;
         let chatObj = {
           _id: id,
@@ -61,11 +59,6 @@ const chat = () => {
     fetchUserAndMessages();
   }, []);
 
-  useEffect(() => {
-
-    if (userData) console.log("messages=", messages);
-  })
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -81,7 +74,7 @@ const chat = () => {
         messages={messages}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1,
+          _id: (userData ? userData.id : null),
         }}
       />
     </SafeAreaView>
