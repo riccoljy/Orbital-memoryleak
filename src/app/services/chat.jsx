@@ -11,7 +11,7 @@ import { supabase } from "@/src/supabase/supabase.js";
 const chat = () => {
 
   const navigation = useNavigation();
-  const [messages, sendMessage] = useState([]);
+  const [messages, setMessage] = useState([]);
   const [input, setInput] = useState("");
   const [userData, setUserData] = useState(null);
   const { chatid, userid } = useLocalSearchParams();
@@ -34,8 +34,29 @@ const chat = () => {
         .select('*')
         .eq('chat_id', chatid)
 
-      if (err) console.error(err);
-      else sendMessage(messages);
+      if (err) { console.error(err); return; }
+      let renderedMsgs = [];
+      for (const message of messages) {
+        const { id, chat_id, content, created_at, sender_id } = message;
+        console.log("message=",message);
+        if (!content) continue;
+        let chatObj = {
+          _id: id,
+          text: content,
+          createdAt: created_at,
+          user: { _id: sender_id, name: "Test" },
+          // image?: string
+          // video?: string
+          // audio?: string
+          // system?: boolean
+          // sent?: boolean
+          // received?: boolean
+          // pending?: boolean
+          // quickReplies?: QuickReplies
+        }
+        renderedMsgs.push(chatObj);
+      }
+      setMessage(renderedMsgs);
     };
     fetchUserAndMessages();
   }, []);
@@ -47,7 +68,7 @@ const chat = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={30} color="white" />
         </TouchableOpacity>
@@ -55,10 +76,10 @@ const chat = () => {
         <View style={{ flexDirection: 'column', marginLeft: 5 }}>
           <Text style={styles.headerText}>{chatid} </Text>
         </View>
-      </View>
+      </View> */}
 
-      <View>
-        {!userData ?
+      {/* <View> */}
+      {/* {!userData ?
           (<Text> Loading...</Text>)
           :
           <GiftedChat
@@ -66,8 +87,15 @@ const chat = () => {
             user={{ _id: userData.id }}
           >
           </GiftedChat>
-        }
-      </View>
+        } */}
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: 1,
+        }}
+      />
+      {/* </View> */}
 
       {/* <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}
         style={{ bottom: -540 }}
