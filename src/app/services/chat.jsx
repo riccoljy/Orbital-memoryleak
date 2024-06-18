@@ -68,7 +68,7 @@ const chat = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.header}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={30} color="white" />
         </TouchableOpacity>
@@ -76,18 +76,7 @@ const chat = () => {
         <View style={{ flexDirection: 'column', marginLeft: 5 }}>
           <Text style={styles.headerText}>{chatid} </Text>
         </View>
-      </View> */}
-
-      {/* <View> */}
-      {/* {!userData ?
-          (<Text> Loading...</Text>)
-          :
-          <GiftedChat
-            messages={messages}
-            user={{ _id: userData.id }}
-          >
-          </GiftedChat>
-        } */}
+      </View>
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
@@ -95,19 +84,6 @@ const chat = () => {
           _id: 1,
         }}
       />
-      {/* </View> */}
-
-      {/* <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}
-        style={{ bottom: -540 }}
-        keyboardVerticalOffset={10}>
-        <View style={styles.inputBox}>
-          <TextInput style={styles.input}
-            placeholder='Type Message...'
-            onChangeText={setInput}
-            value={input} />
-          <Button title="Send" />
-        </View>
-      </KeyboardAvoidingView> */}
     </SafeAreaView>
   )
 }
