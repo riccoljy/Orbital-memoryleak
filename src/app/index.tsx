@@ -4,6 +4,7 @@ import unibudslogo from '@/assets/images/unibuds.png';
 import { supabase } from "@/src/supabase/supabase.js";
 import { useRouter } from "expo-router";
 
+
 const LoginPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
