@@ -11,7 +11,7 @@ import { supabase } from "@/src/supabase/supabase.js";
 const chat = () => {
 
   const navigation = useNavigation();
-  const [messages, sendMessage] = useState([]);
+  const [messages, setMessage] = useState([]);
   const [input, setInput] = useState("");
   const [userData, setUserData] = useState(null);
   const { chatid, userid } = useLocalSearchParams();
@@ -26,7 +26,6 @@ const chat = () => {
       }
 
       setUserData(user);
-      console.log("user=", user)
 
       // Fetch chats
       const { data: messages, error: err } = await supabase
@@ -34,16 +33,31 @@ const chat = () => {
         .select('*')
         .eq('chat_id', chatid)
 
-      if (err) console.error(err);
-      else sendMessage(messages);
+      if (err) { console.error(err); return; }
+      let renderedMsgs = [];
+      for (const message of messages) {
+        const { id, chat_id, content, created_at, sender_id } = message;
+        if (!content) continue;
+        let chatObj = {
+          _id: id,
+          text: content,
+          createdAt: created_at,
+          user: { _id: sender_id, name: "Test" },
+          // image?: string
+          // video?: string
+          // audio?: string
+          // system?: boolean
+          // sent?: boolean
+          // received?: boolean
+          // pending?: boolean
+          // quickReplies?: QuickReplies
+        }
+        renderedMsgs.push(chatObj);
+      }
+      setMessage(renderedMsgs);
     };
     fetchUserAndMessages();
   }, []);
-
-  useEffect(() => {
-
-    if (userData) console.log("messages=", messages);
-  })
 
   return (
     <SafeAreaView style={styles.container}>
@@ -56,30 +70,13 @@ const chat = () => {
           <Text style={styles.headerText}>{chatid} </Text>
         </View>
       </View>
-
-      <View>
-        {!userData ?
-          (<Text> Loading...</Text>)
-          :
-          <GiftedChat
-            messages={messages}
-            user={{ _id: userData.id }}
-          >
-          </GiftedChat>
-        }
-      </View>
-
-      {/* <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}
-        style={{ bottom: -540 }}
-        keyboardVerticalOffset={10}>
-        <View style={styles.inputBox}>
-          <TextInput style={styles.input}
-            placeholder='Type Message...'
-            onChangeText={setInput}
-            value={input} />
-          <Button title="Send" />
-        </View>
-      </KeyboardAvoidingView> */}
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: (userData ? userData.id : null),
+        }}
+      />
     </SafeAreaView>
   )
 }
