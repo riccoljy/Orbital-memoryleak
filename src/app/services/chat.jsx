@@ -42,7 +42,7 @@ const chat = () => {
           _id: id,
           text: content,
           createdAt: created_at,
-          user: { _id: sender_id, name: "Test" },
+          user: { _id: sender_id },
           // image?: string
           // video?: string
           // audio?: string
@@ -58,6 +58,14 @@ const chat = () => {
     };
     fetchUserAndMessages();
   }, []);
+
+  async function onSend(messages) {
+    for (const message of messages) {
+      console.log("Sending message=", message);
+      const { _id, text, user: { _id: sender_id } } = message;
+      const { data, error } = await supabase.rpc('sendMessage');
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
