@@ -241,10 +241,10 @@ const HomePage = () => {
 
         <View style={styles.like}>
           <TouchableOpacity onPress={() => animRef.current.swipeLeft()}>
-            <Image source={dislike} style={styles.image} />
+            <Image source={dislike} style={styles.image}/>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => animRef.current.swipeRight()}>
-            <Image source={like} style={styles.image} />
+            <Image source={like} style={styles.image}/>
           </TouchableOpacity>
         </View>
 
