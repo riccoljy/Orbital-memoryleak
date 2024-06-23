@@ -50,9 +50,22 @@ const interestGroups = () => {
           setUserName(user?.user_metadata.first_name);
 
           if (name && descrip &&id) {
-            const { data, error } = await supabase 
-              .rpc('create_group',{creator:id,grp_name:name,description:descrip,user_name:user?.user_metadata.first_name})
-              Alert.alert('Group created successfully.')
+            const { data:check, error:n } = await supabase 
+              .from('create_group')
+              .select('name')
+              .eq('name',name)
+              .single();
+            console.log(check)
+              if (check) {
+                Alert.alert('Group with name already exists.')
+              }
+              else {
+                const { data, error } = await supabase 
+                  .rpc('create_group',{creator:id,grp_name:name,description:descrip,user_name:user?.user_metadata.first_name})
+                Alert.alert('Group created successfully.')
+              }
+
+            
           
           }
           const { data, error:n } = await supabase 
@@ -62,7 +75,7 @@ const interestGroups = () => {
       }
       getUser();
       
-      },[name,descrip,id,userName])
+      },[name,descrip,id])
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
