@@ -10,6 +10,27 @@ const interestGroups = () => {
     const navigation = useNavigation();
     const router = useRouter();
     const {name,descrip} = useLocalSearchParams(); 
+    const getTop = () => (
+      <View>
+         <View style={styles.header}> 
+            <TouchableOpacity onPress={()=>navigation.goBack()}> 
+                <Ionicons name="chevron-back" size={30} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerText}>Find Interest Groups</Text>
+          </View>
+
+          <View>
+            <TouchableOpacity style={styles.button} 
+              onPress={() => router.push({pathname:'services/groups/createGroup'})} >
+              <Text style={{fontSize: 18,fontWeight:'600'}}>Create a New Group</Text>
+            </TouchableOpacity>
+
+          </View>
+          <View style={{paddingHorizontal:20}}>
+            <Text style={styles.title}>Available Groups :</Text>
+          </View>
+      </View>
+    );
     const [id,setId] = useState(null);
     const [joinData,setJoinData] = useState(null);
     const [userName,setUserName]= useState('');
@@ -44,30 +65,14 @@ const interestGroups = () => {
       },[name,descrip,id,userName])
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}> 
-            <TouchableOpacity onPress={()=>navigation.goBack()}> 
-                <Ionicons name="chevron-back" size={30} color="white" />
-            </TouchableOpacity>
-            <Text style={styles.headerText}>Find Interest Groups</Text>
-          </View>
-
-          <View>
-            <TouchableOpacity style={styles.button} 
-              onPress={() => router.push({pathname:'services/groups/createGroup'})} >
-              <Text style={{fontSize: 18,fontWeight:'600'}}>Create a New Group</Text>
-            </TouchableOpacity>
-
-          </View>
-
-          <View style={{paddingHorizontal:20}}>
-          <Text style={styles.title}>Available Groups :</Text>
-          <View>
             <FlatList
                 data={joinData}
                 keyExtractor={(val) => val.id.toString()}
+                contentContainerStyle={{paddingBottom:20}}
+                ListHeaderComponent={getTop()}
                 renderItem={({item}) => (
                   <TouchableOpacity style={{paddingVertical:20,width:'100%',flexDirection:'row',
-                  borderBottomColor:'grey',borderBottomWidth:1,alignItems:'center'}}
+                  borderBottomColor:'grey',borderBottomWidth:1,alignItems:'center',paddingHorizontal:20}}
                     onPress={() => router.push({pathname:'services/groups/joinGroup',params:{
                       descrip:item.description,
                       name:item.name,
@@ -84,9 +89,7 @@ const interestGroups = () => {
                   </TouchableOpacity>
                     )}
                 />
-          </View>
           
-            </View>
         
     </SafeAreaView>
   )
@@ -97,7 +100,8 @@ export default interestGroups
 const styles = StyleSheet.create({
     container: {
       backgroundColor:'#161622',
-      flex:1
+      flex:1,
+      paddingHorizontal:10
     },
     headerText: {
       fontSize: 27,
@@ -113,7 +117,7 @@ const styles = StyleSheet.create({
       
     },
     button: {
-      marginTop:50,
+      marginTop:30,
       marginHorizontal:50,
       paddingVertical:15,
       flexDirection:'row',
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 0,
-    marginTop: 50,
+    marginTop: 30,
     paddingRight: 20,
     color: '#D3D3D3',
     flexDirection:'row'
