@@ -1,0 +1,17 @@
+name: Create .env File
+
+on:
+  push:
+    branches:
+      - web
+
+jobs:
+  create-env:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create .env file
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_SUPABASE_URL }}" > .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+          cat .env 
