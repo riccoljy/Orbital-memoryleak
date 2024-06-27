@@ -9,15 +9,15 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const match = () => {
   const router = useRouter();
-  const {swipername,swipedname} = useLocalSearchParams();
+  const {matchedUser, swipername,swipedname} = useLocalSearchParams();
   const navigation = useNavigation();
+  console.log('tet', matchedUser);
   return (
     <SafeAreaView style = {styles.container}>
       <View style={styles.header}> 
         <TouchableOpacity onPress={()=>navigation.goBack()}> 
         <Ionicons name="chevron-back" size={30} color="white"/>
-        </TouchableOpacity>
-                                
+        </TouchableOpacity>                     
       </View>
 
       <View style={{alignItems:'center',justifyContent:'center'}}>
