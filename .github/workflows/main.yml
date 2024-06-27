@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Create .env file
         run: |
           echo "SUPABASE_URL=${{ vars.SUPABASE_URL }}" > .env
@@ -25,4 +28,4 @@ jobs:
         run: npm install
 
       - name: Run build script
-        run: node build.js
+        run: node build.js  # Execute your build script
