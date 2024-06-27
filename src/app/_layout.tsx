@@ -11,6 +11,8 @@ export default function RootLayout() {
       />
       <Stack.Screen name="signup"
       options={({title: 'Registration'})}></Stack.Screen>
+      <Stack.Screen name="forgotPassword"
+      options={({title: 'Forgot Password'})}></Stack.Screen>
     </Stack>
   );
 }

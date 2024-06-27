@@ -64,7 +64,10 @@ const LoginPage = () => {
             />
             <Button title="Login" onPress={handleLogin} />
             <TouchableOpacity onPress={() => router.push("/signup")}>
-              <Text style={styles.signupText}>Don't have an account? Create account</Text>
+              <Text style={[styles.signupText, { marginTop: 40 }]}>Don't have an account? Create account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/forgotPassword")}>
+              <Text style={[styles.signupText, { marginTop: 20 }]}>Forgot password</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
