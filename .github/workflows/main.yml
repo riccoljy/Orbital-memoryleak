@@ -12,6 +12,6 @@ jobs:
     steps:
       - name: Create .env file
         run: |
-          echo "SUPABASE_URL=${{ env.SUPABASE_SUPABASE_URL }}" > .env
-          echo "SUPABASE_ANON_KEY=${{ env.SUPABASE_ANON_KEY }}" >> .env
+          echo "SUPABASE_URL=${{ vars.SUPABASE_SUPABASE_URL }}" > .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
           cat .env 
