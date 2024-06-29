@@ -76,57 +76,16 @@ const chatFriends = () => {
               <TouchableOpacity style={styles.chatItem}
                 onPress={() => router.push({ pathname: 'services/chat', params: { chatid: item.id, chatName: item.chat_name } })}>
                 <Text style={styles.name}>
-                  <Text>Chat ID: {item.id}</Text>
+                  <FontAwesome6 name="circle-user" size={40} color="white" />
+                  <View style={{ flexDirection: 'column', marginLeft: 20 }}>
+                    <Text style={{ color: 'white', marginTop: 5 }}>{item.lastMessage}</Text>
+                  </View>
                   <Text>Chat name: {item.chat_name}</Text>
-                  <Text>Participants: {item.participant_ids.join(', ')}</Text>
-                  <Text>Created At: {new Date(item.created_at).toLocaleString()}</Text>
-                  <Text>Last Chatted at: {item.latest_message_timestamp}</Text>
                 </Text>
-
-                {/* <Text style={styles.name}>{item.chat_name}{item.latest_message_timestamp}
-                    {item.isOnline && (
-                  <View style={{
-                    width: 5, backgroundColor: 'yellow', height: 5, borderRadius: 3,
-                    marginBottom: 4
-                  }}></View>)} 
-                  </Text> */}
               </TouchableOpacity>
             )} />
         )}
       </View>
-
-      {/* <View style={{ paddingHorizontal: 20 }}>
-        <FlatList
-          data={chats}
-          keyExtractor={(val) => val.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={{
-              paddingVertical: 20, width: '100%', flexDirection: 'row',
-              borderBottomColor: 'grey', borderBottomWidth: 1, alignItems: 'center'
-            }}
-              onPress={() => router.push({
-                pathname: 'services/chat', params: {
-                  age: item.age,
-                  chat: JSON.stringify(item.chat),
-                  name: item.name,
-                },
-              })}
-            >
-              <FontAwesome6 name="circle-user" size={40} color="white" />
-              <View style={{ flexDirection: 'column', marginLeft: 20 }}>
-                <Text style={styles.name}>{item.name}, {item.age} {item.isOnline && (
-                  <View style={{
-                    width: 5, backgroundColor: 'yellow', height: 5, borderRadius: 3,
-                    marginBottom: 4
-                  }}></View>)} </Text>
-
-                <Text style={{ color: 'white', marginTop: 5 }}>{item.lastMessage}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-      </View> */}
-
     </SafeAreaView>
   )
 }

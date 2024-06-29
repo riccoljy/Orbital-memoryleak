@@ -124,7 +124,7 @@ const HomePage = () => {
   const animRef = useRef(null);
 
   const left = async (idx) => {
-    if (!userData[idx]) return;
+    if (userData && !userData[idx]) return;
     const { data, error } = await supabase
       .from('passes')
       .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
@@ -133,7 +133,7 @@ const HomePage = () => {
   }
 
   const right = async (idx) => {
-    if (!userData[idx]) return;
+    if (userData && !userData[idx]) return;
     const { data, error } = await supabase
       .from('likes')
       .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
@@ -146,8 +146,8 @@ const HomePage = () => {
       .eq("swiped_id", swip)
       .single();
 
-    if (matches) {
-      const { data, error } = await supabase
+    if (matches && userData) {
+      await supabase
         .from('matches')
         .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
       router.push({
@@ -156,6 +156,11 @@ const HomePage = () => {
           swipedname: userData[idx].first_name,
           matchedUser: userData,
         },
+      })
+      let chatName = `${swipName} & ${userData[idx].first_name}`;
+      await supabase.rpc('createchat', {
+        chat_name: chatName,
+        participant_ids: [userData[idx].id, swip]
       })
     }
   }
