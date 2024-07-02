@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,21 +15,24 @@
       font-family: 'Arial', sans-serif;
       margin: 0;
     }
+
     .container {
       text-align: center;
       background-color: #ffffff;
       padding: 40px 20px;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      max-width: 400px;
+      max-width: 300px;
       width: 100%;
       animation: fadeIn 1s ease-in-out;
     }
+
     .container h2 {
       margin-bottom: 20px;
       font-size: 24px;
       color: #333;
     }
+
     .container input {
       width: 100%;
       padding: 10px;
@@ -36,6 +40,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
+
     .container button {
       width: 100%;
       padding: 10px;
@@ -47,14 +52,17 @@
       font-size: 16px;
       margin-top: 20px;
     }
+
     .container button:hover {
       background-color: #218838;
     }
+
     @keyframes fadeIn {
       from {
         opacity: 0;
         transform: scale(0.9);
       }
+
       to {
         opacity: 1;
         transform: scale(1);
@@ -62,25 +70,27 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h2>Reset Password</h2>
-    <input type="password" id="new-password" placeholder="New Password">
+    <input type="password" id="new-password" placeholder="New Password" style="margin-right: 20px">
     <input type="password" id="confirm-password" placeholder="Confirm New Password">
     <button onclick="resetPassword()">Confirm Reset Password</button>
   </div>
 
   <!-- Placeholder for Supabase URL -->
   <script>
+    import { createClient } from "@supabase/supabase-js"; //illegal?
     const supabaseUrl = '__SUPABASE_URL__';  // Placeholder for Supabase URL
     const supabaseKey = '__SUPABASE_ANON_KEY__';  // Placeholder for Supabase Key
 
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(supabaseUrl, supabaseKey); //need to import Supabase first
 
     async function resetPassword() {
       console.log("url, key=", supabaseUrl, supabaseKey)
-      // const newPassword = document.getElementById('new-password').value;
-      // const confirmPassword = document.getElementById('confirm-password').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
 
       // if (newPassword === confirmPassword) {
       //   try {
@@ -100,4 +110,5 @@
     }
   </script>
 </body>
+
 </html>
