@@ -9,9 +9,9 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const match = () => {
   const router = useRouter();
-  const {matchedUser, swipername,swipedname} = useLocalSearchParams();
+  const {matchedUser, swipername,swipedname, chatData} = useLocalSearchParams();
   const navigation = useNavigation();
-  console.log('tet', matchedUser);
+  console.log('tet', chatData);
   return (
     <SafeAreaView style = {styles.container}>
       <View style={styles.header}> 
@@ -50,7 +50,7 @@ const match = () => {
         <TouchableOpacity 
           onPress={() => {
             navigation.goBack();
-            router.push('services/chat')
+            // router.push({ pathname: 'services/chat', params: { chatid: item.id, chatName: item.chat_name } }) //Put ChatData into here
           }}
           style={{
             padding:30,
