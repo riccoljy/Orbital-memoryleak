@@ -8,48 +8,6 @@ import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
 
-const sampleData = [
-  {
-    name: 'Alex',
-    id: 1,
-    age: 21,
-    uni: 'NUS',
-    course: 'Business Analytics',
-    bio: 'Hi, currently doing bt1101 and am looking for a study buddy.'
-
-  },
-
-  {
-    name: 'Emma',
-    id: 7,
-    age: 22,
-    uni: 'NTU',
-    course: 'Computer Science',
-    bio: "Hey there! I am taking CS2100 and would love a study group."
-  },
-  {
-    name: 'John',
-    id: 3,
-    age: 20,
-    uni: 'SMU',
-    course: 'Economics',
-    bio: "Hello! Currently enrolled in EC101, looking for someone to study with."
-  },
-  {
-    name: 'Sophia',
-    id: 4,
-    age: 23,
-    uni: 'NUS',
-    course: 'Mechanical Engineering',
-    bio: "Hi everyone! I am in ME2135 this semester and would love to find a study buddy."
-  }
-];
-
-
-
-
-
-
 const HomePage = () => {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
@@ -111,9 +69,6 @@ const HomePage = () => {
         user_metadata = user.user_metadata
         console.log('user metadata = ', user_metadata)
         swiper();
-
-
-
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
@@ -147,6 +102,13 @@ const HomePage = () => {
       .single();
 
     if (matches && userData) {
+      let chatName = `${swipName} & ${userData[idx].first_name}`;
+      const { data, error } = await supabase.rpc('createchat', {
+        chat_name: chatName,
+        participant_ids: [userData[idx].id, swip]
+      })
+      console.log("data=", data);//Get the chat ID to pass into the next router.push
+
       await supabase
         .from('matches')
         .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
@@ -155,12 +117,8 @@ const HomePage = () => {
           swipername: swipName,
           swipedname: userData[idx].first_name,
           matchedUser: userData,
+          chatData: data,
         },
-      })
-      let chatName = `${swipName} & ${userData[idx].first_name}`;
-      await supabase.rpc('createchat', {
-        chat_name: chatName,
-        participant_ids: [userData[idx].id, swip]
       })
     }
   }
