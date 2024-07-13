@@ -68,12 +68,12 @@ const interestGroups = () => {
             chat_name: name,
             participant_ids: [id]
           })
-          
+
         }
       }
       const { data, error: n } = await supabase
         .from('create_group')
-        .select('*')
+        .select('*');
       setJoinData(data);
     }
     getUser();
