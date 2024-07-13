@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -8,12 +8,16 @@ import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
 
+
 const HomePage = () => {
   const router = useRouter();
-  const [userData, setUserData] = useState(null);
-  const [swip, setSwiper] = useState(null);
+  const [userData, setUserData] = useState<any[]>([]);
+  const [swip, setSwiper] = useState('');
   const [swipName, setSwiperName] = useState(null);
   const { Course = '', Module = '', University = '' } = useLocalSearchParams();
+  const [cardIdx,setCardIdx] = useState(0);
+  const [oldCards,setOldCards] = useState<any[]>([]);
+
 
 
   useEffect(() => {
@@ -21,22 +25,31 @@ const HomePage = () => {
       const { data: allData, error } = await supabase
         .rpc('get_user_metadata', { useid: swip })
 
-      const { data: user_passes, error: nil } = await supabase
-        .from('passes')
-        .select('swiped_id')
-        .eq('swiper_id', swip)
-      const final_passes = user_passes.map(val => val.swiped_id)
+      {/* */}
+
+      
 
       const { data: user_likes, error: n } = await supabase
         .from('likes')
         .select('swiped_id')
         .eq('swiper_id', swip)
-      const final_likes = user_likes.map(val => val.swiped_id)
+      let final_likes: string | any[];
+      if (user_likes) {
+        final_likes = user_likes.map(val => val.swiped_id)
+
+      }
+      {/*!final_passes?.includes(u.id) &&
+        const { data: user_passes, error: nil } = await supabase
+        .from('passes')
+        .select('swiped_id')
+        .eq('swiper_id', swip)
+      const final_passes = user_passes.map(val => val.swiped_id)
+         */}
       if (allData) {
-        const filtered = allData.filter((u: { id: any; }) => !final_passes?.includes(u.id) && !final_likes?.includes(u.id))
+        const filtered = allData.filter((u: { id: any; }) =>  !final_likes?.includes(u.id))
         let filtered2;
         if (Course || Module || University) {
-          filtered2 = filtered.filter((u) => (u.course.toString().toLowerCase()
+          filtered2 = filtered.filter((u: { course: { toString: () => string; }; bio: { toString: () => string | string[]; }; university: { toString: () => string; }; }) => (u.course.toString().toLowerCase()
             == Course.toString().toLowerCase() || Course == '') &&
             (u.bio.toString().includes(Module.toString().toUpperCase()) || Module == '') &&
             (u.university.toString().toLowerCase()
@@ -62,13 +75,19 @@ const HomePage = () => {
 
       const { data: { user }, error } = await supabase.auth.getUser();
       console.log("error=", error)
-      setSwiper(user?.id);
+      if (user && user.id) {
+        setSwiper(user?.id);
+
+      }
       setSwiperName(user?.user_metadata.first_name);
       let user_metadata;
       if (user) {
         user_metadata = user.user_metadata
         console.log('user metadata = ', user_metadata)
         swiper();
+
+
+
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
@@ -78,16 +97,27 @@ const HomePage = () => {
 
   const animRef = useRef(null);
 
-  const left = async (idx) => {
-    if (userData && !userData[idx]) return;
-    const { data, error } = await supabase
-      .from('passes')
-      .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
-    console.log('swipeleft: ', swipName);
+  const left = async (idx: number) => {
+    if ((userData && !userData[idx]) ) return;
+    if (userData) {
+      setOldCards(old => [...old,userData[idx]])
+      const { data, error } = await supabase
+       .from('passes')
+       .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
+     console.log('swipeleft: ', swipName);
+    }
+   
+    
 
   }
 
-  const right = async (idx) => {
+  const swipedAll = () => {
+    setCardIdx(0);
+    setUserData(old => [...old,...oldCards]);
+    setOldCards([]);
+  }
+
+  const right = async (idx: number) => {
     if (userData && !userData[idx]) return;
     const { data, error } = await supabase
       .from('likes')
@@ -102,13 +132,6 @@ const HomePage = () => {
       .single();
 
     if (matches && userData) {
-      let chatName = `${swipName} & ${userData[idx].first_name}`;
-      const { data, error } = await supabase.rpc('createchat', {
-        chat_name: chatName,
-        participant_ids: [userData[idx].id, swip]
-      })
-      console.log("data=", data);//Get the chat ID to pass into the next router.push
-
       await supabase
         .from('matches')
         .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
@@ -117,8 +140,12 @@ const HomePage = () => {
           swipername: swipName,
           swipedname: userData[idx].first_name,
           matchedUser: userData,
-          chatData: data,
         },
+      })
+      let chatName = `${swipName} & ${userData[idx].first_name}`;
+      await supabase.rpc('createchat', {
+        chat_name: chatName,
+        participant_ids: [userData[idx].id, swip]
       })
     }
   }
@@ -138,7 +165,7 @@ const HomePage = () => {
             <AntDesign name="right" size={24} color="#D3D3D3" />
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <TouchableOpacity 
             onPress={() => router.push('services/chatFriends')}
             style={styles.input2}>
             <AntDesign name="wechat" size={24} color="#D3D3D3" />
@@ -169,6 +196,7 @@ const HomePage = () => {
             animateCardOpacity
             stackSize={3}
             verticalSwipe={false}
+            onSwipedAll={swipedAll}
             onSwipedLeft={(cardIndex) => {
               left(cardIndex)
             }}
@@ -202,10 +230,18 @@ const HomePage = () => {
         </View>
 
         <View style={styles.like}>
-          <TouchableOpacity onPress={() => animRef.current.swipeLeft()}>
+          <TouchableOpacity onPress={() => {
+            if (animRef && animRef.current) {
+              animRef.current.swipeLeft()
+            }
+          }}>
             <Image source={dislike} style={styles.image} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => animRef.current.swipeRight()}>
+          <TouchableOpacity onPress={() => {
+            if (animRef && animRef.current) {
+              animRef.current.swipeRight()
+            }
+          }}>
             <Image source={like} style={styles.image} />
           </TouchableOpacity>
         </View>

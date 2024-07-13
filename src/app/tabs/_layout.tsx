@@ -1,7 +1,5 @@
 
-import { Stack } from "expo-router";
-import { Text, View } from '@/components/Themed';
-import {Tabs,Redirect} from 'expo-router';
+import {Tabs} from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -31,9 +29,9 @@ export default function RootLayout() {
       />
 
       <Tabs.Screen 
-        name = "Inbox"
+        name = "Social"
         options={{
-          title: "Inbox",
+          title: "Social",
           headerShown: false,
           tabBarIcon: () => (
             <Octicons name="inbox" size={24} color="white" />

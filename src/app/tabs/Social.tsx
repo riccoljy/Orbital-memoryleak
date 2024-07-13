@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Inbox = () => {
+const Social = () => {
   return (
     <View>
       <Text>Inbox</Text>
@@ -10,6 +10,6 @@ const Inbox = () => {
 }
 
 
-export default Inbox
+export default Social
 
 const styles = StyleSheet.create({})

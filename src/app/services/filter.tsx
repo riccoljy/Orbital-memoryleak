@@ -1,8 +1,8 @@
-import { StyleSheet, Text,TouchableOpacity, TextInput, View, Button, Appearance, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text,TouchableOpacity, TextInput, View, Appearance } from 'react-native';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from 'expo-router';
-import { Ionicons,FontAwesome6 ,Entypo} from '@expo/vector-icons';
+import { Ionicons} from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const filter = () => {

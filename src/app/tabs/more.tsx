@@ -5,18 +5,20 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from "expo-router";
 import { AntDesign, Ionicons, Entypo, MaterialIcons } from '@expo/vector-icons';
 import { supabase } from "@/src/supabase/supabase.js";
-import alert from '@/src/alert.js';
 
 
 const more = () => {
   const router = useRouter();
-  const [userData, setUserData] = useState('');
+  const [userData, setUserData] = useState<any>('');
 
   useEffect(() => {
     const getUserData = async () => {
-      let { data: { user: { user_metadata } } } = await supabase.auth.getUser();
-      setUserData(user_metadata);
-      console.log("userMD=", user_metadata);
+      const {data} = await supabase.auth.getUser();
+      if (data && data.user && data.user.user_metadata) {
+        const {user_metadata} = data.user;
+        setUserData(user_metadata);
+        console.log("userMD=", user_metadata);
+      }
     };
     getUserData();
   }, []);

@@ -1,9 +1,9 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, TextInput, FlatList, View, Button, Appearance, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, FlatList, View} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from 'expo-router';
-import { Ionicons, FontAwesome6, Entypo, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
 const interestGroups = () => {

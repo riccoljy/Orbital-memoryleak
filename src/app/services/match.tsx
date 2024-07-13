@@ -1,15 +1,13 @@
-import {Image, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View,TextInput,Button,Keyboard,Platform } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useRouter } from "expo-router";
 import { Ionicons,FontAwesome6 } from '@expo/vector-icons';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
 const match = () => {
-  const router = useRouter();
-  const {matchedUser, swipername,swipedname, chatData} = useLocalSearchParams();
+  const { swipername,swipedname, chatData} = useLocalSearchParams();
   const navigation = useNavigation();
   console.log('tet', chatData);
   return (

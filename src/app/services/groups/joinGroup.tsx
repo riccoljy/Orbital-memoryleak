@@ -1,17 +1,21 @@
-import React, { useEffect, useRef,useState } from 'react';
-import { FlatList,View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect,useState } from 'react';
+import { FlatList,View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter,useLocalSearchParams,useNavigation } from "expo-router";
-import { Ionicons,FontAwesome6,FontAwesome5 } from '@expo/vector-icons';
+import {useLocalSearchParams,useNavigation } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
 import { Collapsible } from '@/components/Collapsible';
+
+interface Name {
+    id: any,
+    name:any
+}
 
 
 const joinGroup = () => {
     const {descrip,name,id,user_name} = useLocalSearchParams(); 
     const navigation = useNavigation();
-    const router = useRouter();
-    const [nameData,setNameData] = useState(null);
+    const [nameData,setNameData] = useState<Name[]|null>(null);
     const [grpId,setGrpId] = useState(null);
     const [refresh,setRefresh] = useState(false);
 
