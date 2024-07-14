@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     ".env"
-, "components/chat/chatList.js", "src/app/services/chat.jsx", "src/app/tabs/home.jsx", "src/app/services/groups/interestGroups.jsx", "src/app/services/groups/createGroup.jsx"  ]
+, "components/chat/chatList.js", "src/app/services/chat.jsx", "src/app/tabs/home.jsx", "src/app/services/groups/interestGroups.jsx", "src/app/services/groups/createGroup.jsx", "src/app/profileSettings/completeRegistration.jsx"  ]
 }

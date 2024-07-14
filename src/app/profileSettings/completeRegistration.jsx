@@ -4,15 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useRouter } from "expo-router";
 import { supabase } from "@/src/supabase/supabase.js";
-import DateTimePicker from '@react-native-community/datetimepicker';
-
 
 const CompleteRegistration = () => {
     const router = useRouter();
     const [userData, setUserData] = useState(null);
     const [firstname, setFirstName] = useState('');
     const [lastname, setlastName] = useState('');
-    const [birthdate, setBirthdate] = useState(new Date(Date.now()));
     const [university, setUniversity] = useState('');
     const [course, setCourse] = useState('');
     const [bio, setBio] = useState('');
@@ -25,7 +22,6 @@ const CompleteRegistration = () => {
             setUserData(user_metadata);
             setFirstName(user_metadata.first_name);
             setlastName(user_metadata.last_name);
-            if (user_metadata.birthdate) setBirthdate(new Date(user_metadata.birthdate));
             if (user_metadata.university) setUniversity(user_metadata.university);
             if (user_metadata.course) setCourse(user_metadata.course);
             if (user_metadata.bio) setBio(user_metadata.bio);
@@ -36,12 +32,10 @@ const CompleteRegistration = () => {
     }, []);
 
     const handleSubmit = async () => {
-        console.log({ firstname, lastname, birthdate, university, course, bio });
         const { data, error } = await supabase.auth.updateUser({
             data: {
                 first_name: firstname,
                 last_name: lastname,
-                birthdate: birthdate,
                 university: university,
                 course: course,
                 bio: bio,
@@ -62,11 +56,6 @@ const CompleteRegistration = () => {
         { label: 'University of the Arts Singapore', value: 'uas' },
         { label: 'Others', value: 'others' },
     ];
-
-    const handleDateChange = (event, selectedDate) => {
-        const currentDate = selectedDate || birthdate;
-        setBirthdate(currentDate);
-    };
 
     return (
         <KeyboardAvoidingView
@@ -94,20 +83,7 @@ const CompleteRegistration = () => {
                         value={lastname}
                         onChangeText={setlastName}
                     />
-                    <Text style={styles.label}>Birthdate</Text>
-                    {/* <Button title="Select Birthdate" 
-                onPress={() => {setShowDatePicker(true)}} 
-                />
-                {showDatePicker &&  */}
-                    <View style={{ alignSelf: 'flex-start', marginBottom: 20, }}>
-                        <DateTimePicker
-                            value={birthdate}
-                            mode="date"
-                            display="default"
-                            onChange={handleDateChange}
-                        />
-                    </View>
-                    {/* } */}
+
                     <Text style={styles.label}>University</Text>
                     <Dropdown
                         style={styles.dropdown}
