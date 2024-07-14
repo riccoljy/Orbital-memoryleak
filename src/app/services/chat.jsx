@@ -1,10 +1,9 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, TextInput, Button, Keyboard, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat';
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { supabase } from "@/src/supabase/supabase.js";
 
 
@@ -14,6 +13,7 @@ const chat = () => {
   const { chatid, userid, chatName: initialChatName } = useLocalSearchParams();
   const [chatName, setChatName] = useState(initialChatName);
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserAndMessages = async () => {
@@ -89,6 +89,7 @@ const chat = () => {
           }
         )
         .subscribe();
+      setLoading(false);
       return () => { supabase.removeChannel(subscriptions); };
     };
     fetchUserAndMessages();
@@ -117,13 +118,16 @@ const chat = () => {
           <Text style={styles.headerText}>{chatName} </Text>
         </View>
       </View>
-      <GiftedChat 
-        messages={messages}
-        onSend={messages => onSend(messages)}
-        user={{
-          _id: (userData ? userData.id : null),
-        }}
-      />
+      {loading ? 
+      <ActivityIndicator /> 
+      : <GiftedChat
+          messages={messages}
+          onSend={messages => onSend(messages)}
+          user={{
+            _id: (userData ? userData.id : null),
+          }}
+        />
+        }
     </SafeAreaView>
   )
 }
