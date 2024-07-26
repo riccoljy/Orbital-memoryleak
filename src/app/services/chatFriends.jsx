@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, FlatList } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, FlatList, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from 'expo-router';
@@ -12,8 +12,6 @@ const chatFriends = () => {
   const [chats, setChats] = useState([]);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-
-
 
   useEffect(() => {
     const fetchUserAndChats = async () => {
@@ -34,7 +32,10 @@ const chatFriends = () => {
         .contains('participant_ids', [user.id]);
 
       if (chatError) console.error(chatError);
-      else setChats(chatData);
+      else {
+        setChats(chatData);
+        setLoading(false);
+      }
     };
     fetchUserAndChats();
   }, []);
@@ -66,25 +67,29 @@ const chatFriends = () => {
       </View>
 
       <View style={styles.container}>
-        {chats.length === 0 ? (
-          <Text style={styles.emptyStateText}>No chats available</Text>
-        ) : (
-          <FlatList
-            data={chats}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.chatItem}
-                onPress={() => router.push({ pathname: 'services/chat', params: { chatid: item.id, chatName: item.chat_name } })}>
-                <Text style={styles.name}>
-                  <FontAwesome6 name="circle-user" size={40} color="white" />
-                  <View style={{ flexDirection: 'column', marginLeft: 20 }}>
-                    <Text style={{ color: 'white', marginTop: 5 }}>{item.lastMessage}</Text>
-                  </View>
-                  <Text>Chat name: {item.chat_name}</Text>
-                </Text>
-              </TouchableOpacity>
-            )} />
-        )}
+        {
+        loading ? (
+          <ActivityIndicator/>
+        ) :
+          chats.length === 0 ? (
+            <Text style={styles.emptyStateText}>No chats available</Text>
+          ) : (
+            <FlatList
+              data={chats}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.chatItem}
+                  onPress={() => router.push({ pathname: 'services/chat', params: { chatid: item.id, chatName: item.chat_name } })}>
+                  <Text style={styles.name}>
+                    <FontAwesome6 name="circle-user" size={40} color="white" />
+                    <View style={{ flexDirection: 'column', marginLeft: 20 }}>
+                      <Text style={{ color: 'white', marginTop: 5 }}>{item.lastMessage}</Text>
+                    </View>
+                    <Text>Chat name: {item.chat_name}</Text>
+                  </Text>
+                </TouchableOpacity>
+              )} />
+          )}
       </View>
     </SafeAreaView>
   )

@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, FlatList, View} from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, FlatList, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -10,6 +10,8 @@ const interestGroups = () => {
   const navigation = useNavigation();
   const router = useRouter();
   const { name, descrip } = useLocalSearchParams();
+  const [loading, setLoading] = useState(true);
+
   const getTop = () => (
     <View>
       <View style={styles.header}>
@@ -74,43 +76,51 @@ const interestGroups = () => {
       const { data, error: n } = await supabase
         .from('create_group')
         .select('*');
+      if (error) {
+        Alert.alert(`Unable to load groups; ${error}`);
+        return;
+      }
       setJoinData(data);
+      setLoading(false);
+
     }
     getUser();
   }, [name, descrip, id])
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={joinData}
-        keyExtractor={(val) => val.id.toString()}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        ListHeaderComponent={getTop()}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={{
-            paddingVertical: 20, width: '100%', flexDirection: 'row',
-            borderBottomColor: 'grey', borderBottomWidth: 1, alignItems: 'center', paddingHorizontal: 20
-          }}
-            onPress={() => router.push({
-              pathname: 'services/groups/joinGroup', params: {
-                descrip: item.description,
-                name: item.name,
-                id: id,
-                user_name: userName
-              },
-            })}
-          >
-            <FontAwesome5 name="user-friends" size={40} color="#D3D3D3" />
-            <View style={{ flexDirection: 'column', marginLeft: 20 }}>
-              <Text style={styles.name}>{cutText(item.name, 3)} </Text>
+      {loading ? (
+        <ActivityIndicator />
+      ) :
+        <FlatList
+          data={joinData}
+          keyExtractor={(val) => val.id.toString()}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          ListHeaderComponent={getTop()}
+          renderItem={({ item }) => (
 
-              <Text style={{ color: 'white', marginTop: 5 }}>{cutText(item.description, 3)}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-
-
+            <TouchableOpacity style={{
+              paddingVertical: 20, width: '100%', flexDirection: 'row',
+              borderBottomColor: 'grey', borderBottomWidth: 1, alignItems: 'center', paddingHorizontal: 20
+            }}
+              onPress={() => router.push({
+                pathname: 'services/groups/joinGroup', params: {
+                  descrip: item.description,
+                  name: item.name,
+                  id: id,
+                  user_name: userName
+                },
+              })}>
+              <FontAwesome5 name="user-friends" size={40} color="#D3D3D3" />
+              <View style={{ flexDirection: 'column', marginLeft: 20 }}>
+                <Text style={styles.name}>{cutText(item.name, 3)} </Text>
+                <Text style={{ color: 'white', marginTop: 5 }}>{cutText(item.description, 3)}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      }
     </SafeAreaView>
+
   )
 }
 

@@ -69,12 +69,10 @@ const HomePage = () => {
       {
         const { data, error } = await supabase.auth.refreshSession()
         const { session, user } = data
-        console.log("session1 =", session);
         if (!session) router.replace("/");
       }
 
       const { data: { user }, error } = await supabase.auth.getUser();
-      console.log("error=", error)
       if (user && user.id) {
         setSwiper(user?.id);
 
