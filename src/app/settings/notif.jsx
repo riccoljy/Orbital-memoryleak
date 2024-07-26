@@ -1,14 +1,15 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Alert, Switch } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from 'expo-router';
-import { Ionicons, FontAwesome } from '@expo/vector-icons'; // Import FontAwesome for icons
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { supabase } from "@/src/supabase/supabase.js";
 
 const Notif = () => {
   const [telegramID, setTeleID] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false); // State for notifications
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -17,15 +18,30 @@ const Notif = () => {
       setUserData(user_metadata);
       if (user_metadata.telegram_id) {
         setTeleID(user_metadata.telegram_id);
-        setNotificationsEnabled(user_metadata.notifications_enabled); // Assuming you have this field
+        setNotificationsEnabled(user_metadata.notifications_enabled);
       }
     };
     getName();
   }, []);
 
-  const handleDelink = async () => {
-    await supabase.auth.updateUser({ data: { telegram_id: null } });
-    setTeleID(null);
+  const handleDelink = () => {
+    Alert.alert(
+      "Confirm Delink",
+      "Are you sure you want to delink your Telegram account?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            await supabase.auth.updateUser({ data: { telegram_id: null } });
+            setTeleID(null);
+          }
+        }
+      ]
+    );
   };
 
   const toggleNotifications = async () => {
@@ -53,12 +69,32 @@ const Notif = () => {
           <View style={styles.linkedContainer}>
             <TouchableOpacity style={styles.button} onPress={handleDelink}>
               <FontAwesome name="unlink" size={20} color="white" />
-              <Text style={styles.buttonText}>Delink Account</Text>
+              <Text style={styles.buttonText}>Delink Telegram Account</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={toggleNotifications}>
-              <Ionicons name={notificationsEnabled ? "notifications" : "notifications-off"} size={20} color="white" />
-              <Text style={styles.buttonText}>{notificationsEnabled ? "Disable Notifications" : "Enable Notifications"}</Text>
-            </TouchableOpacity>
+            <View style={styles.notificationContainer}>
+              <View style={styles.notificationRow}>
+                <Text style={styles.notificationText}>
+                  Telegram Notifications
+                </Text>
+                <TouchableOpacity onPress={() => setShowInfo(!showInfo)}>
+                  <Ionicons name="information-circle-outline" size={20} color="white" />
+                </TouchableOpacity>
+                <Switch
+                  value={notificationsEnabled}
+                  onValueChange={toggleNotifications}
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={notificationsEnabled ? "#ffffff" : "#f4f3f4"}
+                />
+                
+              </View>
+              {showInfo && (
+                <View style={styles.infoBox}>
+                  <Text style={styles.infoText}>
+                    These notifications will be sent via Telegram, not in-app notifications.
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
         )}
       </View>
@@ -89,13 +125,11 @@ const styles = StyleSheet.create({
   instructionContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
   },
   instructionText: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
-    marginVertical: 5
   },
   linkedContainer: {
     alignItems: 'center',
@@ -116,6 +150,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     marginLeft: 10,
+  },
+  notificationContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    width: '80%',
+  },
+  notificationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  notificationText: {
+    fontSize: 16,
+    color: 'white',
+  },
+  infoBox: {
+    backgroundColor: '#1e1e1e',
+    borderRadius: 5,
+    marginTop: 10,
+    width: '100%',
+  },
+  infoText: {
+    color: 'white',
+    fontSize: 14,
   },
 });
 
