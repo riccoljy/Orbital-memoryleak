@@ -24,14 +24,14 @@ ASK_EMAIL, ASK_PASSWORD = range(2)
 
 def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
-        "Let's start linking your Unibuds Account to this chat!\nPlease enter your email address:\nIf you don't wish to continue, click /cancel",
+        "Let's start linking your Unibuds Account to this chat!\nIf you don't wish to continue, click /cancel\nPlease enter your email address:",
     )
     return ASK_EMAIL
 
 def ask_email(update: Update, context: CallbackContext) -> None:
     context.user_data['email'] = update.message.text
     update.message.reply_text(
-        "Email received. Now, please enter your password:\nIf you don't wish to continue, click /cancel ",
+        "Email received. If you don't wish to continue, click /cancel\nNow, please enter your password:",
         reply_markup=ReplyKeyboardRemove()
     )
     return ASK_PASSWORD
@@ -76,7 +76,6 @@ def ask_password(update: Update, context: CallbackContext) -> None:
                     "data": {"telegram_id": telegram_id}
                 }
             )
-
             if metadata_response.status_code == 200:
                 update.message.reply_text("Login successful! Your account has been linked.")
             else:
@@ -85,8 +84,6 @@ def ask_password(update: Update, context: CallbackContext) -> None:
             update.message.reply_text("Failed to retrieve user data.")
     else:
         update.message.reply_text("Login failed. Please check your email and password. Click /link_account again once you are ready to link your account")
-
-    
 
     return ConversationHandler.END
 
