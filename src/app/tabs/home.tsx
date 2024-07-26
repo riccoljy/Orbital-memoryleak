@@ -165,7 +165,7 @@ const HomePage = () => {
           <TouchableOpacity
             onPress={() => router.push('services/chatFriends')}
             style={styles.input2}>
-            <AntDesign name="wechat" size={24} color="#D3D3D3" />
+            <Ionicons name="chatbox" size={24} color="#D3D3D3" />
             <Text style={styles.service2}>Chat With Friends</Text>
             <AntDesign name="right" size={24} color="#D3D3D3" />
 

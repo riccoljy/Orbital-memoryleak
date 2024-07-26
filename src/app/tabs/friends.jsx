@@ -89,11 +89,21 @@ const Friends = () => {
             keyExtractor={(item) => item.sub} // Assuming 'sub' is a unique identifier
             renderItem={({ item }) => (
               <View style={styles.itemContainer}>
-                <Text style={styles.itemText}>Name: {item.first_name} {item.last_name}{'\n'}
-                  {getDistance({ longitude: userData.user_metadata.location.longitude, latitude: userData.user_metadata.location.latitude }, { longitude: item.location.longitude, latitude: item.location.latitude })} km away
-                </Text>
+                <View style={styles.textContainer}>
+                  <Text style={styles.itemText}>
+                    Name: {item.first_name} {item.last_name}
+                  </Text>
+                  <Text style={styles.distanceText}>
+                    {getDistance(
+                      { longitude: userData.user_metadata.location.longitude, latitude: userData.user_metadata.location.latitude },
+                      { longitude: item.location.longitude, latitude: item.location.latitude }
+                    )} km away
+                  </Text>
+                </View>
                 <TouchableOpacity
-                  onPress={() => test(item.sub)}>
+                  onPress={() => test(item.sub)}
+                  style={styles.chatIcon}
+                >
                   <Ionicons name="chatbox" size={32} color="white" />
                 </TouchableOpacity>
               </View>
@@ -135,10 +145,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    alignItems: 'center', // Align items vertically centered
+  },
+  textContainer: {
+    flex: 1, // Take available space
   },
   itemText: {
     fontSize: 20, // Larger text size
     color: 'white',
+  },
+  distanceText: {
+    fontSize: 16,
+    color: '#b0b0b0', // Slightly grey color
+  },
+  chatIcon: {
+    marginLeft: 10, // Space between text and icon
   },
   noFriendsText: {
     color: 'white',
