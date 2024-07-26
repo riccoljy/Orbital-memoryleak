@@ -1,15 +1,19 @@
-import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "@/src/supabase/supabase.js";
+import { useRouter } from "expo-router";
+import { getDistance } from 'geolib';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const Friends = () => {
+  const router = useRouter();
   const [userData, setUserData] = useState(null);
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserAndChats = async () => {
+    const fetchUserAndFriends = async () => {
       // Fetch user ID
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
@@ -19,20 +23,20 @@ const Friends = () => {
       }
       setUserData(user);
 
-      // Fetch chats
-      const { data: chatData, error: chatError } = await supabase
+      // Fetch Friends/Matches
+      const { data: friendData, error: friendError } = await supabase
         .from('matches')
         .select('swiper_id, swiped_id')
         .or(`swiper_id.eq.${user.id},swiped_id.eq.${user.id}`);
 
-      if (chatError) {
-        console.error(chatError);
+      if (friendError) {
+        console.error(friendError);
         setLoading(false);
         return;
       }
 
       let friendsArr = [];
-      for (let pair of chatData) {
+      for (let pair of friendData) {
         if (pair.swiper_id !== user.id) friendsArr.push(pair.swiper_id);
         if (pair.swiped_id !== user.id) friendsArr.push(pair.swiped_id);
       }
@@ -52,8 +56,21 @@ const Friends = () => {
       setLoading(false);
     };
 
-    fetchUserAndChats();
+    fetchUserAndFriends();
   }, []);
+
+  const test = async (friendID) => {
+    const { data: chatData, error: chatError } = await supabase
+      .from('chats')
+      .select('*')
+      .contains('participant_ids', [userData.id])
+      .contains('participant_ids', [friendID])
+      ;
+    if (chatError) console.error(chatError);
+    else {
+      router.push({ pathname: 'services/chat', params: { chatid: chatData[0].id, chatName: chatData[0].chat_name } })
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,7 +89,13 @@ const Friends = () => {
             keyExtractor={(item) => item.sub} // Assuming 'sub' is a unique identifier
             renderItem={({ item }) => (
               <View style={styles.itemContainer}>
-                <Text style={styles.itemText}>Name: {item.first_name} {item.last_name}</Text>
+                <Text style={styles.itemText}>Name: {item.first_name} {item.last_name}{'\n'}
+                  {getDistance({ longitude: userData.user_metadata.location.longitude, latitude: userData.user_metadata.location.latitude }, { longitude: item.location.longitude, latitude: item.location.latitude })} km away
+                </Text>
+                <TouchableOpacity
+                  onPress={() => test(item.sub)}>
+                  <Ionicons name="chatbox" size={32} color="white" />
+                </TouchableOpacity>
               </View>
             )}
           />

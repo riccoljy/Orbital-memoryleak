@@ -17,7 +17,6 @@ const more = () => {
       if (data && data.user && data.user.user_metadata) {
         const {user_metadata} = data.user;
         setUserData(user_metadata);
-        console.log("userMD=", user_metadata);
       }
     };
     getUserData();

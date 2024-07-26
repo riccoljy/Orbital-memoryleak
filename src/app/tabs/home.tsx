@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -7,7 +7,7 @@ import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
-
+import * as Location from 'expo-location';
 
 const HomePage = () => {
   const router = useRouter();
@@ -15,19 +15,14 @@ const HomePage = () => {
   const [swip, setSwiper] = useState('');
   const [swipName, setSwiperName] = useState(null);
   const { Course = '', Module = '', University = '' } = useLocalSearchParams();
-  const [cardIdx,setCardIdx] = useState(0);
-  const [oldCards,setOldCards] = useState<any[]>([]);
-
-
+  const [cardIdx, setCardIdx] = useState(0);
+  const [oldCards, setOldCards] = useState<any[]>([]);
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     const swiper = async () => {
       const { data: allData, error } = await supabase
         .rpc('get_user_metadata', { useid: swip })
-
-      {/* */}
-
-      
 
       const { data: user_likes, error: n } = await supabase
         .from('likes')
@@ -46,7 +41,7 @@ const HomePage = () => {
       const final_passes = user_passes.map(val => val.swiped_id)
          */}
       if (allData) {
-        const filtered = allData.filter((u: { id: any; }) =>  !final_likes?.includes(u.id))
+        const filtered = allData.filter((u: { id: any; }) => !final_likes?.includes(u.id))
         let filtered2;
         if (Course || Module || University) {
           filtered2 = filtered.filter((u: { course: { toString: () => string; }; bio: { toString: () => string | string[]; }; university: { toString: () => string; }; }) => (u.course.toString().toLowerCase()
@@ -62,9 +57,21 @@ const HomePage = () => {
           setUserData(filtered);
         }
       }
-
     }
+
     const checkSession = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert("Permission to access location was denied");
+      }
+      else {
+        let { coords } = await Location.getCurrentPositionAsync();
+        setLocation(coords);
+        const { data, error } = await supabase.auth.updateUser({
+          data: { location: coords }
+        })
+        if (error) console.log(error);
+      }
 
       {
         const { data, error } = await supabase.auth.refreshSession()
@@ -84,7 +91,6 @@ const HomePage = () => {
         swiper();
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
-
     };
     checkSession();
   }, [router, swip]);
@@ -92,22 +98,19 @@ const HomePage = () => {
   const animRef = useRef(null);
 
   const left = async (idx: number) => {
-    if ((userData && !userData[idx]) ) return;
+    if ((userData && !userData[idx])) return;
     if (userData) {
-      setOldCards(old => [...old,userData[idx]])
+      setOldCards(old => [...old, userData[idx]])
       const { data, error } = await supabase
-       .from('passes')
-       .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
-     console.log('swipeleft: ', swipName);
+        .from('passes')
+        .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
+      console.log('swipeleft: ', swipName);
     }
-   
-    
-
   }
 
   const swipedAll = () => {
     setCardIdx(0);
-    setUserData(old => [...old,...oldCards]);
+    setUserData(old => [...old, ...oldCards]);
     setOldCards([]);
   }
 
@@ -159,7 +162,7 @@ const HomePage = () => {
             <AntDesign name="right" size={24} color="#D3D3D3" />
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => router.push('services/chatFriends')}
             style={styles.input2}>
             <AntDesign name="wechat" size={24} color="#D3D3D3" />
