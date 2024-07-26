@@ -111,5 +111,6 @@ def webhook():
     return 'ok'
 
 if __name__ == '__main__':
+    updater.start_polling()
     port = int(os.environ.get("PORT", 5000))  # Use the PORT environment variable
     app.run(host='0.0.0.0', port=port)
