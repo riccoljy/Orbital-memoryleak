@@ -21,10 +21,7 @@ const chatFriends = () => {
         console.error(userError);
         return;
       }
-
       setUserData(user);
-      console.log("user=", user)
-
       // Fetch chats
       const { data: chatData, error: chatError } = await supabase
         .from('chats')

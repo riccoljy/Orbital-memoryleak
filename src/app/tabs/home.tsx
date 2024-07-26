@@ -81,11 +81,7 @@ const HomePage = () => {
       let user_metadata;
       if (user) {
         user_metadata = user.user_metadata
-        console.log('user metadata = ', user_metadata)
         swiper();
-
-
-
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
 
