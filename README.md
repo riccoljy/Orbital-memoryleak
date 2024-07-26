@@ -21,7 +21,7 @@ git clone https://github.com/riccoljy/Orbital-memoryleak.git
 cd Orbital-memoryleak
 npm install
 ```
-5. Launch the project locally
+3. Launch the project locally
 ```
 npm run start
 ```
