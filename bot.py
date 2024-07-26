@@ -1,5 +1,5 @@
 from flask import Flask, request
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram import Update, ReplyKeyboardRemove
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 from dotenv import load_dotenv
 import requests
@@ -8,8 +8,8 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
-SUPABASE_URL = os.environ.get("EXPO_PUBLIC_SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("EXPO_PUBLIC_SUPABASE_ANON_KEY")
+SUPABASE_URL = os.getenv("EXPO_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.getenv("EXPO_PUBLIC_SUPABASE_ANON_KEY")
 
 app = Flask(__name__)
 
