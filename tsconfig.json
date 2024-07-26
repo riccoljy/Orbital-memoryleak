@@ -20,5 +20,5 @@
     "src/app/services/groups/interestGroups.jsx",
     "src/app/services/groups/createGroup.jsx",
     "src/@types/**/*.d.ts" // Add this line
-, "src/app/tabs/friends.jsx"  ]
+, "src/app/tabs/friends.jsx", "src/app/settings/notif.jsx"  ]
 }

@@ -96,20 +96,20 @@ const more = () => {
               onPress={() => router.push('settings/notif')}
               style={styles.setbox}>
               <Ionicons name="notifications" size={24} color="white" />
-              <Text style={styles.setting}>Notifications</Text>
+              <Text style={styles.setting}>Link Telegram Notifications</Text>
 
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => router.push('settings/privacy')}
               style={styles.setbox}>
               <Entypo name="lock" size={24} color="white" />
               <Text style={styles.setting}>Privacy</Text>
 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <Text style={styles.space}></Text>
           </View>
-          <View>
+          {/* <View>
             <Text style={styles.setTitle}>Support & About</Text>
             <TouchableOpacity
               onPress={() => router.push('settings/help')}
@@ -127,16 +127,16 @@ const more = () => {
             </TouchableOpacity>
 
             <Text style={styles.space}></Text>
-          </View>
+          </View> */}
           <View>
             <Text style={styles.setTitle}>Actions</Text>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => router.push('settings/report')}
               style={styles.editPro}>
               <Entypo name="flag" size={24} color="white" />
               <Text style={styles.setting}>Report a Bug</Text>
 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={deleteAccount}
               style={styles.setbox}>
