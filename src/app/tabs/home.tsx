@@ -1,23 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Switch } from 'react-native';
 import { supabase } from "@/src/supabase/supabase.js";
+import { sendTeleMessage } from "@/src/telegram_bot/telegram_bot.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import like from '@/assets/images/like.png';
 import dislike from '@/assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
+import { getDistance } from 'geolib';
 import * as Location from 'expo-location';
 
 const HomePage = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<any[]>([]);
+  const [userTeleID, setUserTeleID] = useState(null);
   const [swip, setSwiper] = useState('');
   const [swipName, setSwiperName] = useState(null);
   const { Course = '', Module = '', University = '' } = useLocalSearchParams();
   const [cardIdx, setCardIdx] = useState(0);
   const [oldCards, setOldCards] = useState<any[]>([]);
   const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [currSorting, setCurrSort] = useState("Random");
 
   useEffect(() => {
     const swiper = async () => {
@@ -82,7 +87,6 @@ const HomePage = () => {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (user && user.id) {
         setSwiper(user?.id);
-
       }
       setSwiperName(user?.user_metadata.first_name);
       let user_metadata;
@@ -91,6 +95,8 @@ const HomePage = () => {
         swiper();
       }
       if (user_metadata && (user_metadata.new_user || !user_metadata.university)) router.push('/profileSettings/completeRegistration');
+      if (user_metadata && user_metadata.telegram_id) setUserTeleID(user_metadata.telegram_id);
+      setLoading(false);
     };
     checkSession();
   }, [router, swip]);
@@ -129,6 +135,23 @@ const HomePage = () => {
       .single();
 
     if (matches && userData) {
+      let chatName = `${swipName} & ${userData[idx].first_name}`;
+      await supabase.rpc('createchat', {
+        chat_name: chatName,
+        participant_ids: [userData[idx].id, swip]
+      });
+      let { data, error } = await supabase
+        .rpc('get_user_by_id', { input_user_id: swip });
+      if (error) {
+        console.log(error);
+      } else if (data[0]) {
+        let swipedTeleID = data[0].raw_user_meta_data.telegram_id;
+        console.log("IDs=", swipedTeleID, userTeleID)
+        if (userTeleID) sendTeleMessage(userTeleID, `Congratulations! You've just matched with ${userData[idx].first_name}!`);
+        if (swipedTeleID) sendTeleMessage(swipedTeleID, `Congratulations! You've just matched with ${swipName}!`);
+      }
+      else console.log(data);
+
       await supabase
         .from('matches')
         .insert([{ swiper_id: swip, swiped_id: userData[idx].id, swiper_name: swipName }])
@@ -139,13 +162,61 @@ const HomePage = () => {
           matchedUser: userData,
         },
       })
-      let chatName = `${swipName} & ${userData[idx].first_name}`;
-      await supabase.rpc('createchat', {
-        chat_name: chatName,
-        participant_ids: [userData[idx].id, swip]
-      })
     }
   }
+
+  const showSortingOptions = () => {
+    if (!location) {
+      Alert.alert(
+        'Location is Off',
+        'Please enable location services to sort by location.',
+        [{ text: 'OK' }],
+        { cancelable: true }
+      );
+      return;
+    }
+
+    Alert.alert(
+      `Currently sorting by: ${currSorting}`,
+      'Choose an option to sort by:',
+      [
+        {
+          text: 'Location (nearest first)',
+          onPress: () => {
+            const sortedData = [...userData].sort((a, b) => {
+              if (!a.location) return 1; // If a has no location, put it behind b
+              if (!b.location) return -1; // If b has no location, put a ahead of b
+              
+              const distanceA = getDistance(
+                { longitude: location.longitude, latitude: location.latitude },
+                { longitude: a.location.longitude, latitude: a.location.latitude }
+              );
+              const distanceB = getDistance(
+                { longitude: location.longitude, latitude: location.latitude },
+                { longitude: b.location.longitude, latitude: b.location.latitude }
+              );
+              return distanceA - distanceB;
+            });
+            setUserData(sortedData);
+            setCurrSort('Location');
+          },
+        },
+        {
+          text: 'Random',
+          onPress: () => {
+            const shuffledData = [...userData].sort(() => Math.random() - 0.5);
+            setUserData(shuffledData);
+            setCurrSort('Random');
+          },
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -180,50 +251,59 @@ const HomePage = () => {
             onPress={() => router.push('services/filter')}>
             <Ionicons name="filter-circle-sharp" size={40} color="#D3D3D3" />
           </TouchableOpacity>
+          <TouchableOpacity
+            style={{ paddingTop: 18, paddingLeft: 20 }}
+            onPress={showSortingOptions}
+          >
+            <Ionicons name="swap-vertical" size={40} color="#D3D3D3" />
+          </TouchableOpacity>
         </View>
 
 
         <View>
 
-          <Swiper
-            ref={animRef}
-            cards={userData ? userData : []}
-            containerStyle={{ backgroundColor: 'transparent' }}
-            cardIndex={0}
-            animateCardOpacity
-            stackSize={3}
-            verticalSwipe={false}
-            onSwipedAll={swipedAll}
-            onSwipedLeft={(cardIndex) => {
-              left(cardIndex)
-            }}
-            onSwipedRight={(cardIndex) => {
-              right(cardIndex)
-            }}
-            renderCard={(card) => {
-              if (card) {
-                return (
-                  <View key={card.sub} style={styles.card}>
-                    <View style={styles.cardDet}>
-                      <Text style={styles.name}>{card.first_name} {card.last_name}</Text>
+          {loading ? <ActivityIndicator /> :
 
-                      <Text style={styles.space}></Text>
-                      <Text style={styles.course}>{card.university} • {card.course}</Text>
-                      <Text style={styles.space}></Text>
-                      <Text style={styles.bio}>{card.bio}</Text>
+            <Swiper
+              ref={animRef}
+              cards={userData ? userData : []}
+              containerStyle={{ backgroundColor: 'transparent' }}
+              cardIndex={0}
+              animateCardOpacity
+              stackSize={3}
+              verticalSwipe={false}
+              onSwipedAll={swipedAll}
+              onSwipedLeft={(cardIndex) => {
+                left(cardIndex)
+              }}
+              onSwipedRight={(cardIndex) => {
+                right(cardIndex)
+              }}
+              renderCard={(card) => {
+                if (card) {
+                  return (
+                    <View key={card.sub} style={styles.card}>
+                      <View style={styles.cardDet}>
+                        <Text style={styles.name}>{card.first_name} {card.last_name}</Text>
 
+                        <Text style={styles.space}></Text>
+                        <Text style={styles.course}>{card.university} • {card.course}</Text>
+                        <Text style={styles.space}></Text>
+                        <Text style={styles.bio}>{card.bio}</Text>
+
+                      </View>
                     </View>
+                  );
+                }
+                return (
+                  <View style={styles.noCards}>
+                    <Text style={styles.noText}>No More Students :(</Text>
                   </View>
-                );
-              }
-              return (
-                <View style={styles.noCards}>
-                  <Text style={styles.noText}>No More Students :(</Text>
-                </View>
 
-              );
-            }}
-          />
+                );
+              }}
+            />
+          }
         </View>
 
         <View style={styles.like}>

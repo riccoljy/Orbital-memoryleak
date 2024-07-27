@@ -93,12 +93,14 @@ const Friends = () => {
                   <Text style={styles.itemText}>
                     Name: {item.first_name} {item.last_name}
                   </Text>
+                  {userData.user_metadata.location && item.location ? 
                   <Text style={styles.distanceText}>
                     {getDistance(
                       { longitude: userData.user_metadata.location.longitude, latitude: userData.user_metadata.location.latitude },
                       { longitude: item.location.longitude, latitude: item.location.latitude }
                     )} km away
-                  </Text>
+                  </Text> : 
+                  <></>}
                 </View>
                 <TouchableOpacity
                   onPress={() => test(item.sub)}
