@@ -1,11 +1,14 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "jsx": "react",
     "strict": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@types/*": ["src/@types/*"]
+      "@/*": ["src/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@expo/router": ["node_modules/@expo/router"]
     }
   },
   "include": [
@@ -19,6 +22,9 @@
     "src/app/tabs/home.jsx",
     "src/app/services/groups/interestGroups.jsx",
     "src/app/services/groups/createGroup.jsx",
-    "src/@types/**/*.d.ts" // Add this line
-, "src/app/tabs/friends.jsx", "src/app/settings/notif.jsx"  ]
+    "src/@types/**/*.d.ts"
+    ,
+    "src/app/tabs/friends.jsx",
+    "src/app/settings/notif.jsx"
+  ]
 }
