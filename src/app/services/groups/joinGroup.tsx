@@ -29,14 +29,6 @@ const joinGroup = () => {
                 .eq('group_id', grpId);
 
             console.log(curData);
-
-            let { data: chats, error } = await supabase
-                .from('chats')
-                .select('*')
-                .eq('group_id', grpId);
-
-            console.log("Chaqweqwets, grpId-", chats[0].id, grpId);
-
             if (!curData?.map(val => val.name).includes(user_name)) {
                 console.log("Here1")
                 await supabase.rpc('join_group', { grp_id: grpId, creator: id, user_name: user_name })
