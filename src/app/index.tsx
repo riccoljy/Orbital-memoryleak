@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, Appearance, ScrollView, KeyboardAvoidingView,Platform } from 'react-native';
-import unibudslogo from '@/assets/images/unibuds.png';
-import { supabase } from "@/src/supabase/supabase.js";
+import unibudslogo from '../../assets/images/unibuds.png';
+import { supabase } from "@/supabase/supabase";
 import { useRouter } from "expo-router";
 
 

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
-import { supabase } from "@/src/supabase/supabase.js";
+import { supabase } from "@/supabase/supabase";
 
 
 const chat = () => {

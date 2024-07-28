@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from "@/src/supabase/supabase.js";
+import { supabase } from "@/supabase/supabase";
 import { useRouter } from "expo-router";
 import { getDistance } from 'geolib';
 import Ionicons from '@expo/vector-icons/Ionicons';

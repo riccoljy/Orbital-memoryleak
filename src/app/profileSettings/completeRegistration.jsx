@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Appearance, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useRouter } from "expo-router";
-import { supabase } from "@/src/supabase/supabase.js";
+import { supabase } from "../../supabase/supabase";
 
 const CompleteRegistration = () => {
     const router = useRouter();

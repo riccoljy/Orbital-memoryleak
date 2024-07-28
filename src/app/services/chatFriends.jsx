@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from 'expo-router';
 import { Ionicons, FontAwesome6, Entypo } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { supabase } from '@/src/supabase/supabase';
+import { supabase } from '../../supabase/supabase';
 
 const chatFriends = () => {
   const navigation = useNavigation();

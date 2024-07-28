@@ -1,10 +1,10 @@
 import React, { useEffect,useState } from 'react';
 import { FlatList,View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { supabase } from "@/src/supabase/supabase.js";
+import { supabase } from "@/supabase/supabase";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useLocalSearchParams,useNavigation } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
-import { Collapsible } from '@/components/Collapsible';
+import  Collapsible from 'react-native-collapsible';
 
 interface Name {
     id: any,

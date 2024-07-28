@@ -1,6 +1,6 @@
 import { Button, FlatList, SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/src/supabase/supabase';
+import { supabase } from '@/supabase/supabase';
 import Collapsible from 'react-native-collapsible';
 
 type Post = {

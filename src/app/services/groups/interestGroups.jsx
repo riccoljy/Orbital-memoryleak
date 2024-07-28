@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, FlatList, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { supabase } from "@/src/supabase/supabase.js";
+import { supabase } from "@/supabase/supabase";
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from 'expo-router';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';

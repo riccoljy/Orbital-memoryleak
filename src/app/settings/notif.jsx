@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from 'expo-router';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import { supabase } from "@/src/supabase/supabase.js";
+import { supabase } from "@/supabase/supabase";
 
 const Notif = () => {
   const [telegramID, setTeleID] = useState(null);

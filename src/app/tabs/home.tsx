@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Switch } from 'react-native';
-import { supabase } from "@/src/supabase/supabase.js";
-import { sendTeleMessage } from "@/src/telegram_bot/telegram_bot.js";
+import { supabase } from "@/supabase/supabase";
+import { sendTeleMessage } from "@/telegram_bot/telegram_bot";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
-import like from '@/assets/images/like.png';
-import dislike from '@/assets/images/dislike.png';
+import like from '../../../assets/images/like.png';
+import dislike from '../../../assets/images/dislike.png';
 import Swiper from "react-native-deck-swiper";
 import { getDistance } from 'geolib';
 import * as Location from 'expo-location';
