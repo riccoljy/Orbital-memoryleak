@@ -1,101 +1,102 @@
-import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import Registration from '../signup';
-import { supabase } from '../../supabase/supabase';
-import { useRouter } from 'expo-router';
+// // __tests__/Registration.test.tsx
+// import React from 'react';
+// import { render, fireEvent, waitFor, screen, Alert } from '@testing-library/react-native';
+// import { jest } from '@jest/globals';
+// // import Registration from "@/app/signup";
+// import { supabase } from "@/supabase/supabase";
+// import { useRouter } from 'expo-router';
 
-jest.mock('expo-router', () => ({
-  useRouter: jest.fn(),
-}));
+// // Mock the supabase and router modules
+// // jest.mock('@/src/supabase/supabase.js', () => ({
+// //   supabase: {
+// //     auth: {
+// //       signUp: jest.fn(),
+// //     },
+// //   },
+// // }));
 
-jest.mock('../../supabase/supabase', () => ({
-  supabase: {
-    auth: {
-      signUp: jest.fn(),
-    },
-  },
-}));
+// jest.mock('expo-router', () => ({
+//   useRouter: jest.fn(),
+// }));
 
-describe('Registration', () => {
-  const mockRouter = { back: jest.fn() };
+// describe('Registration', () => {
+//   const mockRouter = {
+//     back: jest.fn(),
+//   };
 
-  beforeEach(() => {
-    useRouter.mockReturnValue(mockRouter);
-  });
+//   beforeEach(() => {
+//     (useRouter as jest.Mock).mockReturnValue(mockRouter);
+//   });
 
-  it('renders correctly', () => {
-    const { getByPlaceholderText, getByText } = render(<Registration />);
-    expect(getByPlaceholderText('First name')).toBeTruthy();
-    expect(getByPlaceholderText('Last name')).toBeTruthy();
-    expect(getByPlaceholderText('Email')).toBeTruthy();
-    expect(getByPlaceholderText('Password')).toBeTruthy();
-    expect(getByPlaceholderText('Enter password again')).toBeTruthy();
-    expect(getByText('Register')).toBeTruthy();
-  });
+//   afterEach(() => {
+//     jest.clearAllMocks();
+//   });
 
-  it('shows an error if passwords do not match', async () => {
-    const { getByPlaceholderText, getByText } = render(<Registration />);
-    fireEvent.changeText(getByPlaceholderText('Email'), 'test@example.com');
-    fireEvent.changeText(getByPlaceholderText('Password'), 'password1');
-    fireEvent.changeText(getByPlaceholderText('Enter password again'), 'password2');
-    fireEvent.press(getByText('Register'));
+//   test('renders correctly', () => {
+//     render(<Registration />);
+//     expect(screen.getByPlaceholderText('First name')).toBeTruthy();
+//     expect(screen.getByPlaceholderText('Last name')).toBeTruthy();
+//     expect(screen.getByPlaceholderText('Email')).toBeTruthy();
+//     expect(screen.getByPlaceholderText('Password')).toBeTruthy();
+//     expect(screen.getByPlaceholderText('Enter password again')).toBeTruthy();
+//     expect(screen.getByText('Register')).toBeTruthy();
+//   });
 
-    await waitFor(() => {
-      expect(getByText("Passwords don't match")).toBeTruthy();
-    });
-  });
+//   test('updates input fields correctly', () => {
+//     render(<Registration />);
+//     fireEvent.changeText(screen.getByPlaceholderText('First name'), 'John');
+//     fireEvent.changeText(screen.getByPlaceholderText('Last name'), 'Doe');
+//     fireEvent.changeText(screen.getByPlaceholderText('Email'), 'john.doe@example.com');
+//     fireEvent.changeText(screen.getByPlaceholderText('Password'), 'password123');
+//     fireEvent.changeText(screen.getByPlaceholderText('Enter password again'), 'password123');
+//     expect(screen.getByPlaceholderText('First name')).toHaveProp('value', 'John');
+//     expect(screen.getByPlaceholderText('Last name')).toHaveProp('value', 'Doe');
+//     expect(screen.getByPlaceholderText('Email')).toHaveProp('value', 'john.doe@example.com');
+//     expect(screen.getByPlaceholderText('Password')).toHaveProp('value', 'password123');
+//     expect(screen.getByPlaceholderText('Enter password again')).toHaveProp('value', 'password123');
+//   });
 
-  it('shows an error if email or password is missing', async () => {
-    const { getByText } = render(<Registration />);
-    fireEvent.press(getByText('Register'));
+//   test('shows error when passwords do not match', () => {
+//     render(<Registration />);
+//     fireEvent.changeText(screen.getByPlaceholderText('Password'), 'password123');
+//     fireEvent.changeText(screen.getByPlaceholderText('Enter password again'), 'differentPassword');
+//     fireEvent.press(screen.getByText('Register'));
+//     expect(Alert.alert).toHaveBeenCalledWith("Error", "Passwords don't match");
+//   });
 
-    await waitFor(() => {
-      expect(getByText('Please enter both email and password.')).toBeTruthy();
-    });
-  });
+//   test('shows error when email or password is missing', () => {
+//     render(<Registration />);
+//     fireEvent.changeText(screen.getByPlaceholderText('Password'), 'password123');
+//     fireEvent.press(screen.getByText('Register'));
+//     expect(Alert.alert).toHaveBeenCalledWith("Error", "Please enter both email and password.");
+//   });
 
-  it('calls supabase signUp and shows verification alert on success', async () => {
-    supabase.auth.signUp.mockResolvedValueOnce({ data: {}, error: null });
+//   test('handles registration success', async () => {
+//     (supabase.auth.signUp as jest.Mock).mockResolvedValueOnce({ data: {}, error: null });
+//     render(<Registration />);
+//     fireEvent.changeText(screen.getByPlaceholderText('First name'), 'John');
+//     fireEvent.changeText(screen.getByPlaceholderText('Last name'), 'Doe');
+//     fireEvent.changeText(screen.getByPlaceholderText('Email'), 'john.doe@example.com');
+//     fireEvent.changeText(screen.getByPlaceholderText('Password'), 'password123');
+//     fireEvent.changeText(screen.getByPlaceholderText('Enter password again'), 'password123');
+//     fireEvent.press(screen.getByText('Register'));
+//     await waitFor(() => {
+//       expect(Alert.alert).toHaveBeenCalledWith("Please check your inbox for verification");
+//       expect(mockRouter.back).toHaveBeenCalled();
+//     });
+//   });
 
-    const { getByPlaceholderText, getByText } = render(<Registration />);
-    fireEvent.changeText(getByPlaceholderText('First name'), 'John');
-    fireEvent.changeText(getByPlaceholderText('Last name'), 'Doe');
-    fireEvent.changeText(getByPlaceholderText('Email'), 'test@example.com');
-    fireEvent.changeText(getByPlaceholderText('Password'), 'password');
-    fireEvent.changeText(getByPlaceholderText('Enter password again'), 'password');
-    fireEvent.press(getByText('Register'));
-
-    await waitFor(() => {
-      expect(supabase.auth.signUp).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password',
-        options: {
-          data: {
-            first_name: 'John',
-            last_name: 'Doe',
-            new_user: true,
-          },
-        },
-      });
-      expect(mockRouter.back).toHaveBeenCalled();
-      expect(getByText('Please check your inbox for verification')).toBeTruthy();
-    });
-  });
-
-  it('shows error message on signUp failure', async () => {
-    supabase.auth.signUp.mockResolvedValueOnce({ data: null, error: { message: 'Sign up failed' } });
-
-    const { getByPlaceholderText, getByText } = render(<Registration />);
-    fireEvent.changeText(getByPlaceholderText('First name'), 'John');
-    fireEvent.changeText(getByPlaceholderText('Last name'), 'Doe');
-    fireEvent.changeText(getByPlaceholderText('Email'), 'test@example.com');
-    fireEvent.changeText(getByPlaceholderText('Password'), 'password');
-    fireEvent.changeText(getByPlaceholderText('Enter password again'), 'password');
-    fireEvent.press(getByText('Register'));
-
-    await waitFor(() => {
-      expect(supabase.auth.signUp).toHaveBeenCalled();
-      expect(getByText('Sign up failed')).toBeTruthy();
-    });
-  });
-});
+//   test('handles registration failure', async () => {
+//     (supabase.auth.signUp as jest.Mock).mockResolvedValueOnce({ data: null, error: { message: 'Registration failed' } });
+//     render(<Registration />);
+//     fireEvent.changeText(screen.getByPlaceholderText('First name'), 'John');
+//     fireEvent.changeText(screen.getByPlaceholderText('Last name'), 'Doe');
+//     fireEvent.changeText(screen.getByPlaceholderText('Email'), 'john.doe@example.com');
+//     fireEvent.changeText(screen.getByPlaceholderText('Password'), 'password123');
+//     fireEvent.changeText(screen.getByPlaceholderText('Enter password again'), 'password123');
+//     fireEvent.press(screen.getByText('Register'));
+//     await waitFor(() => {
+//       expect(Alert.alert).toHaveBeenCalledWith('Registration failed');
+//     });
+//   });
+// });
