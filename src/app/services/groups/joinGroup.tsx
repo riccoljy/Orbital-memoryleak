@@ -41,7 +41,6 @@ const joinGroup = () => {
                     .eq('group_id', grpId);
 
                 console.log("Chats, grpId-", chats, grpId);
-
                 if (chats && !chats.length && userData) {
                     await supabase.rpc('createchat', {
                         chat_name: name,
@@ -50,8 +49,7 @@ const joinGroup = () => {
                     })
                     console.log("Created Grp Chat")
                 }
-
-                else if (chats && chats.length && userData) {
+                else {
                     await supabase
                         .rpc('appendparticipants', {
                             chat_id: chats[0].id,
@@ -59,17 +57,12 @@ const joinGroup = () => {
                         })
                     console.log("Added to Grp Chat")
                 }
-
-
                 Alert.alert('Joined group successfully.')
             }
             else {
                 Alert.alert('You are already in the group.') //Change to dont even give the option to click button if already in group
             }
         }
-
-
-
     }
 
     useEffect(() => {
