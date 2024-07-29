@@ -247,7 +247,7 @@ const HomePage = () => {
 
         <View style={styles.title}>
           <Text style={styles.title}>DISCOVER</Text>
-          <TouchableOpacity style={{ paddingTop: 18, paddingLeft: 100 }}
+          <TouchableOpacity style={{ paddingTop: 18, paddingLeft: 40 }}
             onPress={() => router.push('services/filter')}>
             <Ionicons name="filter-circle-sharp" size={40} color="#D3D3D3" />
           </TouchableOpacity>
